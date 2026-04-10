@@ -75,6 +75,7 @@ Skills должны иметь чёткую роль.
 Пример:
 
 - project-orchestrator → маршрутизирует
+- continuity-keeper → отслеживает изменения и связи
 - writer-assistant → строит
 - story-analyst → анализирует
 
