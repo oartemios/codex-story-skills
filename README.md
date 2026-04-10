@@ -1,6 +1,6 @@
 # codex-story-skills
 
-Reusable Codex skills for writing, story architecture, diagnostics, and project bootstrap.
+Reusable Codex skills for fiction writing, story architecture, diagnostics, and project bootstrap.
 
 ## Repository Layout
 
@@ -18,9 +18,21 @@ The `skills/` directory is preserved as-is so internal references like `skills/C
 
 ## Current Skills
 
-- `writer-assistant`: editorial and structural support for a writing project
+- `writer-assistant`: editorial and structural support for a fiction project
 - `story-analyst`: diagnostics for pacing, contradictions, arcs, and story risks
-- `project-bootstrap`: starter structure and migration support for writing projects
+- `project-bootstrap`: starter structure and migration support for fiction projects
+
+## Scope
+
+These skills are designed for fiction-first workflows and currently assume a recommended project layout based on:
+
+- `canon/`
+- `characters/`
+- `books/`
+- `archive/`
+- `inbox/`
+
+That layout is a convention, not a hard requirement. The current version optimizes for projects that already use it or can map their materials onto it with minimal adaptation.
 
 ## Local Installation
 
@@ -48,4 +60,4 @@ Reasons:
 - structure and naming may still change
 - private iteration is simpler before generalizing for wider reuse
 
-Once the repository becomes more generic and documented, it can be made public.
+Once the repository becomes more generic, more configurable, and better documented, it can be made public.
