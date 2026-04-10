@@ -6,9 +6,15 @@
 
 ```text
 codex-story-skills/
+  scripts/
+  CONTRIBUTING.md
+  INSTALL.md
+  README.md
   skills/
     CONVENTIONS.md
     _shared/
+    continuity-keeper/
+    project-orchestrator/
     writer-assistant/
     story-analyst/
     project-bootstrap/
@@ -40,20 +46,55 @@ Skills рассчитаны в первую очередь на fiction-first wo
 
 ## Локальная установка
 
-Скопировать содержимое `skills/` в `~/.codex/skills`:
+Для безопасной синхронизации использовать штатный скрипт:
 
 ```bash
-rsync -a ~/dev/AI/codex-story-skills/skills/ ~/.codex/skills/
+scripts/sync-to-codex.sh
 ```
 
-Если раньше использовался симлинк, сначала удалить его, затем повторить синхронизацию:
+Для предварительной проверки без изменений:
 
 ```bash
-rm ~/.codex/skills/writer-assistant
-rsync -a ~/dev/AI/codex-story-skills/skills/ ~/.codex/skills/
+scripts/sync-to-codex.sh --dry-run
 ```
+
+Скрипт:
+
+- валидирует пакет перед синхронизацией
+- создает backup управляемых элементов
+- аккуратно заменяет старые симлинки, если они остались
+- синхронизирует только runtime-слой `skills/`
 
 После установки нужно перезапустить Codex, чтобы он перечитал доступные skills.
+
+## Установка для конечного пользователя
+
+Для установки из GitHub и безопасной синхронизации в `~/.codex/skills`:
+
+```bash
+scripts/install-package.sh
+```
+
+Скрипт:
+
+- клонирует пакет
+- валидирует его
+- устанавливает в Codex Home через безопасный sync
+- показывает краткий обзор возможностей, примеры запросов и ссылки на документацию
+
+## Разработка и контрибьютинг
+
+Быстрый цикл разработки:
+
+```bash
+python3 scripts/validate-skills.py
+scripts/sync-to-codex.sh --dry-run
+scripts/sync-to-codex.sh
+```
+
+Подробные правила разработки и локального тестирования:
+
+- `CONTRIBUTING.md`
 
 ## Языковая политика
 
