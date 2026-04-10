@@ -1,0 +1,55 @@
+name: Skills CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate skills package
+        run: python3 scripts/validate-skills.py
+
+      - name: Check shell scripts syntax
+        run: bash -n scripts/sync-to-codex.sh scripts/install-package.sh
+
+      - name: Check installer help
+        run: scripts/install-package.sh --help
+
+      - name: Dry-run sync to fake Codex Home
+        env:
+          HOME: ${{ runner.temp }}/fake-home
+        run: |
+          mkdir -p "$HOME/.codex/skills/.system"
+          scripts/sync-to-codex.sh --dry-run
+
+      - name: Real sync to fake Codex Home
+        env:
+          HOME: ${{ runner.temp }}/fake-home
+        run: |
+          mkdir -p "$HOME/.codex/skills/.system"
+          scripts/sync-to-codex.sh
+
+      - name: Verify installed package
+        env:
+          HOME: ${{ runner.temp }}/fake-home
+        run: |
+          test -f "$HOME/.codex/skills/CONVENTIONS.md"
+          test -d "$HOME/.codex/skills/_shared"
+          test -d "$HOME/.codex/skills/project-orchestrator"
+          test -d "$HOME/.codex/skills/continuity-keeper"
+          test -d "$HOME/.codex/skills/writer-assistant"
+          test -d "$HOME/.codex/skills/story-analyst"
+          test -d "$HOME/.codex/skills/project-bootstrap"
