@@ -1,5 +1,7 @@
 # codex-story-skills
 
+![Skills CI](https://github.com/oartemios/codex-story-skills/actions/workflows/ci.yml/badge.svg)
+
 Набор Codex skills для художественных проектов: проектной архитектуры, сюжетной диагностики и стартовой сборки рабочей базы.
 
 ## Структура репозитория
