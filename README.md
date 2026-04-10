@@ -1,8 +1,8 @@
 # codex-story-skills
 
-Reusable Codex skills for fiction writing, story architecture, diagnostics, and project bootstrap.
+Набор Codex skills для художественных проектов: проектной архитектуры, сюжетной диагностики и стартовой сборки рабочей базы.
 
-## Repository Layout
+## Структура репозитория
 
 ```text
 codex-story-skills/
@@ -14,17 +14,19 @@ codex-story-skills/
     project-bootstrap/
 ```
 
-The `skills/` directory is preserved as-is so internal references like `skills/CONVENTIONS.md` and `skills/_shared/...` continue to work.
+Каталог `skills/` сохранён как корневой runtime-слой, чтобы внутренние ссылки вроде `skills/CONVENTIONS.md` и `skills/_shared/...` продолжали работать без дополнительной упаковки.
 
-## Current Skills
+## Текущие skills
 
-- `writer-assistant`: editorial and structural support for a fiction project
-- `story-analyst`: diagnostics for pacing, contradictions, arcs, and story risks
-- `project-bootstrap`: starter structure and migration support for fiction projects
+- `writer-assistant`: редакторско-архитектурная поддержка художественного проекта
+- `story-analyst`: диагностика ритма, противоречий, арок и сюжетных рисков
+- `project-bootstrap`: стартовая раскладка и миграционная поддержка художественного проекта
 
-## Scope
+## Позиционирование
 
-These skills are designed for fiction-first workflows and currently assume a recommended project layout based on:
+Этот репозиторий поддерживается как единая система, а не как набор полностью независимых skill-пакетов.
+
+Skills рассчитаны в первую очередь на fiction-first workflow и сейчас опираются на рекомендуемую структуру проекта:
 
 - `canon/`
 - `characters/`
@@ -32,32 +34,38 @@ These skills are designed for fiction-first workflows and currently assume a rec
 - `archive/`
 - `inbox/`
 
-That layout is a convention, not a hard requirement. The current version optimizes for projects that already use it or can map their materials onto it with minimal adaptation.
+Эта структура является соглашением, а не жестким требованием. Текущая версия лучше всего подходит для проектов, которые уже используют такую схему или могут сопоставить с ней свои материалы без тяжелой миграции.
 
-## Local Installation
+## Локальная установка
 
-Copy the repository's `skills/` contents into `~/.codex/skills`.
+Скопировать содержимое `skills/` в `~/.codex/skills`:
 
 ```bash
 rsync -a ~/dev/AI/codex-story-skills/skills/ ~/.codex/skills/
 ```
 
-If an old symlink exists, remove it first and then sync again.
+Если раньше использовался симлинк, сначала удалить его, затем повторить синхронизацию:
 
 ```bash
 rm ~/.codex/skills/writer-assistant
 rsync -a ~/dev/AI/codex-story-skills/skills/ ~/.codex/skills/
 ```
 
-After installation, restart Codex so it reloads available skills.
+После установки нужно перезапустить Codex, чтобы он перечитал доступные skills.
 
-## Publishing Strategy
+## Языковая политика
 
-Recommended initial visibility: private.
+- Основной язык репозитория: русский.
+- Английский допустим для технических идентификаторов, названий файлов, путей и устойчивых терминов интерфейса.
+- Если термин не является техническим идентификатором, предпочтителен русский вариант.
 
-Reasons:
-- the skills are still tuned to a specific writing workflow
-- structure and naming may still change
-- private iteration is simpler before generalizing for wider reuse
+## Публикация
 
-Once the repository becomes more generic, more configurable, and better documented, it can be made public.
+Рекомендуемая начальная видимость: `private`.
+
+Причины:
+- skills всё ещё заметно подстроены под конкретный рабочий процесс
+- структура и naming ещё могут меняться
+- в приватном режиме проще спокойно довести систему до более общего состояния
+
+Когда репозиторий станет более универсальным, более настраиваемым и лучше документированным, его можно открыть.

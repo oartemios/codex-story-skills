@@ -1,22 +1,22 @@
-# Install
+# Установка
 
-## Install into Codex Home
+## Установка в Codex Home
 
 ```bash
 rsync -a ~/dev/AI/codex-story-skills/skills/ ~/.codex/skills/
 ```
 
-## Replace Existing Symlink With Real Files
+## Замена старого симлинка на реальные файлы
 
 ```bash
 rm ~/.codex/skills/writer-assistant
 rsync -a ~/dev/AI/codex-story-skills/skills/ ~/.codex/skills/
 ```
 
-## Verify
+## Проверка
 
 ```bash
 ls -la ~/.codex/skills
 ```
 
-`writer-assistant` should appear as a normal directory, not a symlink.
+`writer-assistant` должен отображаться как обычная папка, а не как симлинк.
