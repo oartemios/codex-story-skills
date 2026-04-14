@@ -6,6 +6,12 @@
 scripts/sync-to-codex.sh
 ```
 
+Для установки в нестандартный каталог:
+
+```bash
+scripts/sync-to-codex.sh --dest /path/to/codex/skills
+```
+
 ## Предварительная проверка без изменений
 
 ```bash
@@ -19,6 +25,9 @@ scripts/sync-to-codex.sh --dry-run
 - заменяет старые симлинки, если они ещё остались
 - синхронизирует только runtime-слой `skills/`
 - не трогает посторонние элементы в `~/.codex/skills`, например `.system`
+
+Если указан `--dest`, backup по умолчанию создается в соседнем каталоге `skill-backups`.
+Путь backup можно переопределить через `--backup-root`.
 
 ## Проверка после установки
 

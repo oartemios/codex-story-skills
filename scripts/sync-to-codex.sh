@@ -5,17 +5,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SOURCE_DIR="${REPO_ROOT}/skills"
 DEST_DIR="${HOME}/.codex/skills"
-BACKUP_ROOT="${HOME}/.codex/skill-backups"
+BACKUP_ROOT=""
 DRY_RUN=0
 
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/sync-to-codex.sh [--dry-run] [--dest PATH]
+  scripts/sync-to-codex.sh [--dry-run] [--dest PATH] [--backup-root PATH]
 
 Options:
-  --dry-run    Show what would be synced without changing ~/.codex/skills
-  --dest PATH  Override target Codex skills directory
+  --dry-run           Show what would be synced without changing ~/.codex/skills
+  --dest PATH         Override target Codex skills directory
+  --backup-root PATH  Override backup directory root
 EOF
 }
 
@@ -27,6 +28,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --dest)
       DEST_DIR="$2"
+      shift 2
+      ;;
+    --backup-root)
+      BACKUP_ROOT="$2"
       shift 2
       ;;
     -h|--help)
@@ -48,6 +53,10 @@ fi
 
 echo "==> Validating skills package"
 python3 "${SCRIPT_DIR}/validate-skills.py"
+
+if [[ -z "${BACKUP_ROOT}" ]]; then
+  BACKUP_ROOT="$(dirname "${DEST_DIR}")/skill-backups"
+fi
 
 mkdir -p "${DEST_DIR}"
 
