@@ -1,0 +1,69 @@
+name: Bug report
+description: Report a reproducible bug in installation, validation, or skill behavior.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for reproducible bugs. For wrong skill selection, use the "Wrong skill selected" template.
+  - type: input
+    id: version
+    attributes:
+      label: Package version or git ref
+      description: "Example: v0.1.0, main, or a commit SHA."
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - installation
+        - sync script
+        - validation script
+        - skill behavior
+        - documentation
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List exact commands, prompts, or file state needed to reproduce the issue.
+      placeholder: |
+        1. Run ...
+        2. Ask Codex ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, shell, Codex context, and anything relevant about the project structure.
+      placeholder: |
+        OS:
+        shell:
+        project structure:
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or output
+      render: text
+      description: Paste relevant output. Do not include secrets or private manuscript content.
