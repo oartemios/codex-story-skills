@@ -148,12 +148,41 @@
 Что изменилось после этих правок и что теперь нужно синхронизировать?
 ```
 
+## developers-skills
+
+Пишет, обновляет и проверяет инженерные RFC/ADR.
+
+Использовать, если нужно:
+
+- написать RFC, proposal или design doc
+- оформить ADR или decision record
+- зафиксировать архитектурное решение
+- сравнить варианты и trade-offs
+- добавить goals, non-goals, risks, rollout или open questions
+- проверить существующий RFC/ADR перед принятием
+
+Не использовать как code review по diff. Если пользователь просит review кода, сначала нужен обычный code-review режим.
+
+Обычно на выходе:
+
+- RFC draft
+- ADR draft
+- review существующего RFC/ADR
+- список alternatives, consequences и open questions
+
+Пример:
+
+```text
+Оформи ADR по решению хранить события в append-only таблице.
+```
+
 ## Быстрая маршрутизация
 
 - Нет структуры -> `project-bootstrap`
 - Есть структура, но нет рабочего канона -> `writer-assistant`
 - Есть рабочий материал, нужен анализ качества -> `story-analyst`
 - Были правки, нужно понять последствия -> `continuity-keeper`
+- Нужно RFC/ADR по инженерному решению -> `developers-skills`
 - Непонятно, какой пункт выше верный -> `project-orchestrator`
 
 ## Типовые цепочки

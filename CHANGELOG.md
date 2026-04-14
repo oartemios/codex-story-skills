@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## Unreleased
+
+### Added
+
+- `developers-skills` runtime skill for engineering RFC/ADR drafting and review.
+
 ## v0.1.0 - 2026-04-14
 
 First public baseline release.
