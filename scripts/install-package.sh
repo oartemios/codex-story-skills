@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/oartemios/codex-story-skills.git"
-REF="main"
+REF="v0.1.0"
 WORKDIR=""
 DEST_DIR="${HOME}/.codex/skills"
 
@@ -16,6 +16,9 @@ Behavior:
   2. Validates it
   3. Safely syncs it into Codex Home
   4. Prints a short overview and example prompts
+
+Defaults:
+  --ref v0.1.0
 EOF
 }
 
@@ -67,7 +70,7 @@ fi
 CLONE_DIR="${CLONE_PARENT}/codex-story-skills"
 
 echo "==> Cloning ${REPO_URL} (${REF})"
-git clone --depth 1 --branch "${REF}" "${REPO_URL}" "${CLONE_DIR}"
+git -c advice.detachedHead=false clone --depth 1 --branch "${REF}" "${REPO_URL}" "${CLONE_DIR}"
 
 echo
 echo "==> Installing into ${DEST_DIR}"
