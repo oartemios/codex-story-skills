@@ -186,6 +186,10 @@ CI проверяет:
 
 - `CHANGELOG.md`
 
+План развития:
+
+- `ROADMAP.md`
+
 ## Ограничения
 
 - Пакет заметно подстроен под fiction-first workflow.
