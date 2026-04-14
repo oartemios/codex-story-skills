@@ -16,6 +16,10 @@ Codex skills для fiction-first проектов: канон, структур
 
 Skills работают как единая система, а не как набор полностью независимых пакетов.
 
+Подробные границы каждого skill:
+
+- `SKILLS.md`
+
 ## Быстрый старт
 
 Установить пакет из GitHub:
@@ -139,6 +143,7 @@ codex-story-skills/
   LICENSE
   README.md
   SECURITY.md
+  SKILLS.md
   TROUBLESHOOTING.md
   skills/
     CONVENTIONS.md
