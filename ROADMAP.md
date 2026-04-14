@@ -109,23 +109,25 @@
 
 ## 6. Завести regression prompt suite
 
+Статус: сделано 2026-04-14.
+
 Цель: проверять routing и границы skills перед новыми релизами.
 
 Сделать:
 
-- создать `docs/SMOKE_TESTS.md` или `tests/prompts/`
+- создать `docs/SMOKE_TESTS.md` или `tests/prompts/` — сделано, выбран `docs/SMOKE_TESTS.md`
 - для каждого кейса указать:
-  - запрос
-  - ожидаемый skill
-  - почему этот skill
-  - что считать ошибкой
+  - запрос — сделано
+  - ожидаемый skill — сделано
+  - почему этот skill — сделано
+  - что считать ошибкой — сделано
 - покрыть минимум:
-  - `project-orchestrator`
-  - `continuity-keeper`
-  - `writer-assistant`
-  - `story-analyst`
-  - `project-bootstrap`
+  - `project-orchestrator` — сделано
+  - `continuity-keeper` — сделано
+  - `writer-assistant` — сделано
+  - `story-analyst` — сделано
+  - `project-bootstrap` — сделано
 
 Готово, когда:
 
-- перед `v0.1.1` есть ручной regression-набор для проверки routing
+- перед `v0.1.1` есть ручной regression-набор для проверки routing — сделано
