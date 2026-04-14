@@ -27,6 +27,8 @@
 | ANALYST-02 | `Разбери противоречия в книге 1` | `story-analyst` |
 | CONT-01 | `Что изменилось после этих правок` | `continuity-keeper` |
 | CONT-02 | `Что теперь нужно синхронизировать после замены версии` | `continuity-keeper` |
+| DEV-01 | `Оформи ADR по этому архитектурному решению` | `developers-skills` |
+| DEV-02 | `Напиши RFC для миграции API` | `developers-skills` |
 | BOUNDARY-01 | `Можно ли уже переходить к scene plan для книги 1?` | `project-orchestrator` |
 
 ## Кейсы
@@ -191,6 +193,42 @@
 - выбрать `project-bootstrap`
 - выбрать `writer-assistant` до фиксации изменившихся связей
 - не отделить измененные факты от неизмененных
+
+### DEV-01
+
+Запрос:
+
+```text
+Оформи ADR по этому архитектурному решению
+```
+
+Ожидаемый skill: `developers-skills`
+
+Почему: запрос на architecture decision record, а не на художественный канон или сюжетную диагностику.
+
+Ошибка:
+
+- выбрать `writer-assistant`
+- писать RFC вместо ADR без причины
+- ставить статус `Accepted`, если пользователь не сказал, что решение принято
+
+### DEV-02
+
+Запрос:
+
+```text
+Напиши RFC для миграции API
+```
+
+Ожидаемый skill: `developers-skills`
+
+Почему: запрос на proposal/design doc для технического изменения.
+
+Ошибка:
+
+- выбрать `project-orchestrator` без необходимости
+- пропустить alternatives, non-goals или rollout
+- закрыть open questions догадками
 
 ### BOUNDARY-01
 

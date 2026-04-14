@@ -117,3 +117,23 @@
 ```text
 Не переписывай материал. Сначала дай только маршрут: какой skill нужен сейчас и почему.
 ```
+
+## Инженерный RFC/ADR
+
+Использовать, если нужно зафиксировать техническое решение или подготовить proposal до реализации.
+
+```text
+Оформи ADR по решению перейти на append-only event log. Решение пока Proposed, нужно явно показать alternatives и consequences.
+```
+
+Или:
+
+```text
+Напиши RFC для миграции платежного воркера на idempotency keys. Добавь goals, non-goals, rollout, risks и open questions.
+```
+
+Ожидаемый маршрут:
+
+- `developers-skills` выберет ADR, если решение фиксируется
+- `developers-skills` выберет RFC, если решение еще обсуждается
+- неизвестные факты должны быть помечены как assumptions или open questions

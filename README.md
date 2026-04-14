@@ -13,8 +13,9 @@ Codex skills для fiction-first проектов: канон, структур
 - `writer-assistant`: собирает канон, структуру, персонажей, конфликтную матрицу и рабочие документы
 - `story-analyst`: диагностирует ритм, противоречия, арки и сюжетные риски
 - `project-bootstrap`: создает стартовую раскладку или выравнивает хаотичную базу
+- `developers-skills`: помогает писать, обновлять и проверять инженерные RFC/ADR
 
-Skills работают как единая система, а не как набор полностью независимых пакетов.
+Fiction-first skills работают как единая система, а `developers-skills` добавляет отдельный инженерный контур для RFC/ADR.
 
 Подробные границы каждого skill:
 
@@ -73,6 +74,8 @@ scripts/sync-to-codex.sh --dest /path/to/codex/skills
 - `Собери рабочий канон`
 - `Проверь ритм книги`
 - `Собери минимальный каркас проекта`
+- `Оформи ADR по этому решению`
+- `Напиши RFC для этой миграции`
 
 Если пакет работает корректно:
 
@@ -81,6 +84,7 @@ scripts/sync-to-codex.sh --dest /path/to/codex/skills
 - канон и структура уходят в `writer-assistant`
 - диагностика уходит в `story-analyst`
 - стартовая сборка и миграция уходят в `project-bootstrap`
+- RFC/ADR уходят в `developers-skills`
 
 ## Рекомендуемая структура проекта
 
@@ -170,6 +174,7 @@ codex-story-skills/
     CONVENTIONS.md
     _shared/
     continuity-keeper/
+    developers-skills/
     project-bootstrap/
     project-orchestrator/
     story-analyst/
