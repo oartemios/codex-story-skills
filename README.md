@@ -155,6 +155,7 @@ inbox/
 
 ```text
 codex-story-skills/
+  docs/
   scripts/
   CHANGELOG.md
   CONTRIBUTING.md
@@ -206,6 +207,10 @@ CI проверяет:
 План развития:
 
 - `ROADMAP.md`
+
+Ручные regression-проверки routing:
+
+- `docs/SMOKE_TESTS.md`
 
 ## Ограничения
 
