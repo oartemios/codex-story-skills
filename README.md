@@ -107,6 +107,10 @@ inbox/
 Что теперь нужно синхронизировать после замены версии?
 ```
 
+Больше сценариев первого запуска:
+
+- `EXAMPLES.md`
+
 ## Безопасная синхронизация
 
 `scripts/sync-to-codex.sh`:
@@ -126,6 +130,7 @@ inbox/
 codex-story-skills/
   scripts/
   CONTRIBUTING.md
+  EXAMPLES.md
   INSTALL.md
   LICENSE
   README.md
