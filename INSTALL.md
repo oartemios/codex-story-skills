@@ -3,8 +3,12 @@
 ## Установка в Codex Home
 
 ```bash
+git clone --branch v0.1.0 https://github.com/oartemios/codex-story-skills.git
+cd codex-story-skills
 scripts/sync-to-codex.sh
 ```
+
+Для последней версии разработки используй `main` вместо `v0.1.0`.
 
 Для установки в нестандартный каталог:
 
