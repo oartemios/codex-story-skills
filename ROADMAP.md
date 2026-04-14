@@ -85,25 +85,27 @@
 
 ## 5. Расширить валидатор на top-level docs
 
+Статус: сделано 2026-04-14.
+
 Цель: ловить битые ссылки и устаревшие top-level документы до merge.
 
 Сделать:
 
-- расширить `scripts/validate-skills.py`
+- расширить `scripts/validate-skills.py` — сделано
 - проверять markdown-ссылки в:
-  - `README.md`
-  - `INSTALL.md`
-  - `EXAMPLES.md`
-  - `SKILLS.md`
-  - `TROUBLESHOOTING.md`
-  - `CHANGELOG.md`
-  - `CONTRIBUTING.md`
-  - `SECURITY.md`
-- обновить CI, если потребуется
+  - `README.md` — сделано
+  - `INSTALL.md` — сделано
+  - `EXAMPLES.md` — сделано
+  - `SKILLS.md` — сделано
+  - `TROUBLESHOOTING.md` — сделано
+  - `CHANGELOG.md` — сделано
+  - `CONTRIBUTING.md` — сделано
+  - `SECURITY.md` — сделано
+- обновить CI, если потребуется — не потребовалось
 
 Готово, когда:
 
-- CI падает на битых ссылках в пользовательской документации
+- CI падает на битых ссылках в пользовательской документации — сделано
 
 ## 6. Завести regression prompt suite
 
