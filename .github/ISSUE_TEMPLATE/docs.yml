@@ -1,0 +1,25 @@
+name: Documentation improvement
+description: Report confusing, missing, or outdated documentation.
+title: "docs: "
+labels:
+  - documentation
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Document or section
+      description: "Example: README.md, INSTALL.md, SKILLS.md, TROUBLESHOOTING.md."
+      placeholder: README.md
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is confusing or missing?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested change
+      description: Optional. Include wording or structure if you have a concrete proposal.

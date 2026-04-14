@@ -1,0 +1,78 @@
+name: Wrong skill selected
+description: Report a case where Codex routed a request to the wrong skill.
+title: "routing: "
+labels:
+  - routing
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when a request should have selected a different skill or route.
+        Do not paste private manuscript content; reduce the prompt to the smallest reproducible example.
+  - type: input
+    id: version
+    attributes:
+      label: Package version or git ref
+      description: "Example: v0.1.0, main, or a commit SHA."
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Original request
+      description: The exact user request or a reduced version that still reproduces the routing issue.
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: expected_skill
+    attributes:
+      label: Expected skill
+      options:
+        - project-orchestrator
+        - continuity-keeper
+        - writer-assistant
+        - story-analyst
+        - project-bootstrap
+        - no skill / general answer
+        - unsure
+    validations:
+      required: true
+  - type: dropdown
+    id: actual_skill
+    attributes:
+      label: Actual skill selected
+      options:
+        - project-orchestrator
+        - continuity-keeper
+        - writer-assistant
+        - story-analyst
+        - project-bootstrap
+        - no skill / general answer
+        - unsure
+    validations:
+      required: true
+  - type: textarea
+    id: why_wrong
+    attributes:
+      label: Why the routing seems wrong
+      description: Explain the expected route and what risk the actual route creates.
+    validations:
+      required: true
+  - type: textarea
+    id: project_structure
+    attributes:
+      label: Project structure
+      description: Include only non-sensitive structure. This helps distinguish canon, books, archive, and inbox layers.
+      placeholder: |
+        canon/
+        characters/
+        books/
+        archive/
+        inbox/
+  - type: textarea
+    id: expected_next_step
+    attributes:
+      label: Expected next step
+      description: Optional. What should Codex have done next?
