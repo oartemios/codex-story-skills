@@ -111,6 +111,10 @@ inbox/
 
 - `EXAMPLES.md`
 
+Если установка или routing ведут себя не так, как ожидается:
+
+- `TROUBLESHOOTING.md`
+
 ## Безопасная синхронизация
 
 `scripts/sync-to-codex.sh`:
@@ -135,6 +139,7 @@ codex-story-skills/
   LICENSE
   README.md
   SECURITY.md
+  TROUBLESHOOTING.md
   skills/
     CONVENTIONS.md
     _shared/
