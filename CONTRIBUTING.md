@@ -76,7 +76,7 @@ The RFC/ADR skill is named `rfc-adr-assistant`. Do not reintroduce `developers-s
 
 - `fiction-core` is the default product.
 - `engineering-addon` is opt-in.
-- `obsidian-addon` is opt-in.
+- `obsidian-addon` is opt-in and includes `fiction-core`.
 - `full` combines `fiction-core`, `engineering-addon`, and `obsidian-addon`.
 
 Bundle manifests are internal build inputs, not a user-facing API.

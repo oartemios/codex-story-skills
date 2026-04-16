@@ -182,7 +182,7 @@
 
 Помогает сопоставить fiction-first проект с Obsidian vault, не делая Obsidian обязательным источником истины.
 
-Поставляется в optional plugin `obsidian-addon` и в combined plugin `full`.
+Поставляется в plugin `obsidian-addon`, который включает `fiction-core`, и в combined plugin `full`.
 
 Использовать, если нужно:
 

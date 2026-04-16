@@ -20,7 +20,7 @@ local marketplace. Default plugin: fiction-core.
 Plugins:
   fiction-core        Default fiction-first package
   engineering-addon   Optional RFC/ADR support
-  obsidian-addon      Optional Obsidian compatibility
+  obsidian-addon      Fiction Core plus Obsidian compatibility
   full                fiction-core plus optional addons
 
 Examples:
