@@ -16,11 +16,27 @@ Do not commit generated plugin bundles or copied skill trees. Change `.codex-dev
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skill-language.py
 python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
 ```
 
 Release zips are written to `dist/`. Both `plugins/` build output and `dist/` are ignored; `.codex-dev/skills/` remains the only source of truth.
+
+## Local Hooks
+
+Git hooks are opt-in:
+
+```bash
+.codex-dev/scripts/install-git-hooks.sh
+```
+
+Installed hooks:
+
+- `pre-commit`: validates skill language and package integrity
+- `pre-push`: builds plugins, validates language and package integrity, packages release assets, and checks shell syntax
+
+The language validator keeps skill instructions Russian-first while allowing English domain terms such as `Obsidian`, `vault`, `backlinks`, `wikilinks`, `RFC`, and `ADR`.
 
 ## Release
 
@@ -69,6 +85,7 @@ Bundle manifests are internal build inputs, not a user-facing API.
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skill-language.py
 python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
 bash -n scripts/install-package.sh .codex-dev/scripts/sync-to-codex.sh

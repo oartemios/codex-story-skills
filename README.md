@@ -79,8 +79,15 @@ Build and validate plugins:
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skill-language.py
 python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
+```
+
+Optional local git hooks:
+
+```bash
+.codex-dev/scripts/install-git-hooks.sh
 ```
 
 Publish an install-ready release by pushing a version tag:

@@ -90,6 +90,7 @@ python3 .codex-dev/scripts/build-plugins.py
 Validation command:
 
 ```bash
+python3 .codex-dev/scripts/validate-skill-language.py
 python3 .codex-dev/scripts/validate-skills.py
 ```
 

@@ -32,6 +32,7 @@ Before tagging:
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skill-language.py
 python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
 ```

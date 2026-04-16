@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cleanup() {
+  rm -rf plugins/engineering-addon plugins/fiction-core plugins/full plugins/obsidian-addon
+}
+trap cleanup EXIT
+
+python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skill-language.py
+python3 .codex-dev/scripts/validate-skills.py
+python3 .codex-dev/scripts/package-release-assets.py
+bash -n scripts/install-package.sh .codex-dev/scripts/sync-to-codex.sh

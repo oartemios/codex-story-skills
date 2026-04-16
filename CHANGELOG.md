@@ -12,6 +12,7 @@ All notable changes to this project are documented here.
 - `obsidian-compat` skill for optional Obsidian vault compatibility.
 - Release asset packaging script for plugin zip files.
 - GitHub Actions release workflow that uploads install-ready plugin zip assets.
+- Skill language validator and opt-in local git hooks for pre-commit/pre-push checks.
 
 ### Changed
 
