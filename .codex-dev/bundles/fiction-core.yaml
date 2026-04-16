@@ -1,0 +1,11 @@
+name: fiction-core
+display_name: Fiction Core
+description: Default fiction-first Codex plugin for canon, structure, diagnostics, continuity, and project bootstrap workflows.
+category: Writing
+include_shared: true
+skills:
+  - project-orchestrator
+  - continuity-keeper
+  - writer-assistant
+  - story-analyst
+  - project-bootstrap

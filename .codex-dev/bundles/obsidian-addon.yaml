@@ -1,0 +1,7 @@
+name: obsidian-addon
+display_name: Obsidian Addon
+description: Optional Obsidian compatibility plugin for mapping fiction-first projects into vault workflows.
+category: Writing
+include_shared: false
+skills:
+  - obsidian-compat

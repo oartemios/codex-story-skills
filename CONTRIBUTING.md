@@ -1,150 +1,76 @@
-# Контрибьютинг
+# Contributing
 
-## Цель
+This repository is plugin-first.
 
-Этот репозиторий поддерживает runtime-пакет skills для Codex.
+## Source Of Truth
 
-Главный принцип изменений:
+- Atomic source skills live only in `.codex-dev/skills/`.
+- Bundle manifests live in `.codex-dev/bundles/`.
+- Build, validation, packaging, and raw dev sync tooling lives in `.codex-dev/scripts/`.
+- Generated installable plugins are built into `plugins/` locally.
+- Public user-facing scripts live in `scripts/`.
 
-- не ломать текущий рабочий поток
-- валидировать пакет перед синхронизацией
-- синхронизировать в `~/.codex/skills` только проверенный набор
-- относиться к `main` как к стабильной ветке пакета
+Do not commit generated plugin bundles or copied skill trees. Change `.codex-dev/skills/` or `.codex-dev/bundles/`, then rebuild locally.
 
-## Локальная разработка
-
-Обычный цикл:
-
-1. Изменить файлы в репозитории.
-2. Прогнать локальную проверку:
+## Local Build
 
 ```bash
-python3 scripts/validate-skills.py
+python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skills.py
+python3 .codex-dev/scripts/package-release-assets.py
 ```
 
-3. Посмотреть безопасный dry-run синхронизации:
+Release zips are written to `dist/`. Both `plugins/` build output and `dist/` are ignored; `.codex-dev/skills/` remains the only source of truth.
+
+## Release
+
+Install-ready releases are published by `.github/workflows/release.yml`.
 
 ```bash
-scripts/sync-to-codex.sh --dry-run
+git tag v0.2.0
+git push origin v0.2.0
 ```
 
-4. Если всё в порядке, выполнить реальную синхронизацию:
+The release workflow builds plugin bundles from `.codex-dev/bundles/*.yaml`, validates them, packages zip assets, and uploads them to GitHub Release.
+
+See `docs/RELEASE.md`.
+
+## Raw Dev Sync
+
+Raw sync is retained only for local source testing:
 
 ```bash
-scripts/sync-to-codex.sh
+.codex-dev/scripts/sync-to-codex.sh --dry-run
+.codex-dev/scripts/sync-to-codex.sh
 ```
 
-5. Перезапустить Codex и проверить, что skill срабатывает на ожидаемые запросы.
+Do not present raw sync as the public install path. Users install built plugin release assets through `scripts/install-package.sh`.
 
-## Правило для main
+## Adding Or Moving Skills
 
-`main` должен оставаться устанавливаемым и проходить CI.
+1. Add or update the atomic skill under `.codex-dev/skills/<skill-name>/`.
+2. Keep `SKILL.md` frontmatter valid with `name` and `description`.
+3. Put reusable rules in `references/` and templates in `templates/`.
+4. Add the skill to the relevant `.codex-dev/bundles/*.yaml` manifest.
+5. Rebuild plugins and validate.
 
-1. Работать из отдельной ветки.
-2. Открывать PR даже для собственных изменений, когда это практично.
-3. Считать зелёный GitHub Actions обязательным условием перед merge.
-4. Не пушить в `main` сырой код, который не прошёл локальную проверку и CI.
+The RFC/ADR skill is named `rfc-adr-assistant`. Do not reintroduce `developers-skills`.
 
-Если репозиторий начинает принимать внешние PR, желательно включить branch protection или ruleset на GitHub.
+## Bundle Rules
 
-## Ручной smoke-test
+- `fiction-core` is the default product.
+- `engineering-addon` is opt-in.
+- `obsidian-addon` is opt-in.
+- `full` combines `fiction-core`, `engineering-addon`, and `obsidian-addon`.
 
-После синхронизации и перезапуска Codex проверить хотя бы по одному триггеру на каждый ключевой skill.
+Bundle manifests are internal build inputs, not a user-facing API.
 
-Рекомендуемый набор:
-
-- `project-orchestrator`: `Хочу проработать книгу 1`
-- `project-orchestrator`: `Что мне делать сначала, а что потом`
-- `continuity-keeper`: `Что изменилось после этих правок`
-- `continuity-keeper`: `Что теперь нужно синхронизировать после замены версии`
-- `writer-assistant`: `Собери рабочий канон`
-- `story-analyst`: `Проверь ритм книги`
-- `project-bootstrap`: `Собери минимальный каркас проекта`
-
-Что проверять:
-
-- выбран правильный skill или маршрут
-- ответ соответствует роли skill, а не смешивает несколько ролей без причины
-- нет регрессий в существующих триггерах
-- новый skill не перехватывает явно чужую задачу
-
-## Что проверять перед синхронизацией
-
-- у каждого skill есть `SKILL.md`
-- у `SKILL.md` есть YAML-шапка с `name` и `description`
-- внутренние markdown-ссылки на `skills/...`, `../templates/...`, `templates/...` не сломаны
-- новые rules и templates не дублируют роль существующих skills
-- язык пользовательского текста соответствует языковой политике репозитория
-
-## Безопасная синхронизация в Codex Home
-
-Использовать только:
+## Checks Before PR
 
 ```bash
-scripts/sync-to-codex.sh
+python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skills.py
+python3 .codex-dev/scripts/package-release-assets.py
+bash -n scripts/install-package.sh .codex-dev/scripts/sync-to-codex.sh
+scripts/install-package.sh --help
 ```
-
-Что делает скрипт:
-
-- валидирует пакет
-- создает backup управляемых элементов в `~/.codex/skill-backups/<timestamp>/`
-- аккуратно убирает старые симлинки, если они вдруг остались
-- синхронизирует только содержимое `skills/` в `~/.codex/skills`
-- сохраняет посторонние элементы вроде `.system`
-
-Если используется нестандартный `--dest`, backup по умолчанию создается в соседнем каталоге `skill-backups`.
-Для полного контроля пути можно передать `--backup-root`.
-
-Для предварительной проверки использовать:
-
-```bash
-scripts/sync-to-codex.sh --dry-run
-```
-
-## Локальное тестирование
-
-Минимальный smoke-test после синхронизации:
-
-- Codex видит новые skills после перезапуска
-- `project-orchestrator` срабатывает на запросы про маршрут и следующий шаг
-- `continuity-keeper` срабатывает на запросы про изменения, версии и сломанные связи
-- существующие `writer-assistant`, `story-analyst`, `project-bootstrap` продолжают работать без регрессий
-
-Автоматически в CI проверяются:
-
-- `python3 scripts/validate-skills.py`
-- синтаксис shell-скриптов
-- `scripts/install-package.sh --help`
-- `scripts/sync-to-codex.sh --dry-run`
-- реальная безопасная синхронизация в изолированный fake Codex Home
-
-## Для конечного пользователя
-
-Для установки из GitHub использовать:
-
-```bash
-scripts/install-package.sh
-```
-
-Скрипт:
-
-- клонирует репозиторий
-- валидирует пакет
-- безопасно синхронизирует его в `~/.codex/skills`
-- показывает краткий обзор возможностей и примеры запросов
-
-## Security
-
-О проблемах безопасности не нужно писать публичный issue.
-Использовать порядок из `SECURITY.md`.
-
-## Структура изменений
-
-Предпочтительный порядок разработки:
-
-1. `references/`
-2. `templates/`
-3. `SKILL.md`
-4. `README.md` / `INSTALL.md` / `CONTRIBUTING.md`
-
-Сначала стабилизировать логику, потом форму, потом документацию.

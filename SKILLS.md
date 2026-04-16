@@ -148,9 +148,11 @@
 Что изменилось после этих правок и что теперь нужно синхронизировать?
 ```
 
-## developers-skills
+## rfc-adr-assistant
 
 Пишет, обновляет и проверяет инженерные RFC/ADR.
+
+Поставляется в optional plugin `engineering-addon` и в combined plugin `full`.
 
 Использовать, если нужно:
 
@@ -176,13 +178,35 @@
 Оформи ADR по решению хранить события в append-only таблице.
 ```
 
+## obsidian-compat
+
+Помогает сопоставить fiction-first проект с Obsidian vault, не делая Obsidian обязательным источником истины.
+
+Поставляется в optional plugin `obsidian-addon` и в combined plugin `full`.
+
+Использовать, если нужно:
+
+- разложить vault notes по `canon/`, `characters/`, `books/`, `archive/`, `inbox/`
+- понять, какие backlinks, tags или wikilinks являются навигацией, а не каноном
+- мигрировать заметки из Obsidian без потери fiction-first структуры
+- проверить, где vault-навигация расходится с рабочим каноном
+
+Не использовать для обычной работы с каноном, сценами, арками или continuity, если Obsidian не является частью задачи.
+
+Пример:
+
+```text
+Помоги сопоставить мой Obsidian vault с рабочей структурой проекта.
+```
+
 ## Быстрая маршрутизация
 
 - Нет структуры -> `project-bootstrap`
 - Есть структура, но нет рабочего канона -> `writer-assistant`
 - Есть рабочий материал, нужен анализ качества -> `story-analyst`
 - Были правки, нужно понять последствия -> `continuity-keeper`
-- Нужно RFC/ADR по инженерному решению -> `developers-skills`
+- Нужно RFC/ADR по инженерному решению -> `rfc-adr-assistant`
+- Нужно сопоставить Obsidian vault с проектом -> `obsidian-compat`
 - Непонятно, какой пункт выше верный -> `project-orchestrator`
 
 ## Типовые цепочки

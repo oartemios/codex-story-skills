@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish, for example v0.2.0"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Build plugin bundles
+        run: python3 .codex-dev/scripts/build-plugins.py
+
+      - name: Validate source skills and plugins
+        run: python3 .codex-dev/scripts/validate-skills.py
+
+      - name: Package release assets
+        run: python3 .codex-dev/scripts/package-release-assets.py
+
+      - name: Verify release assets
+        run: |
+          test -f dist/fiction-core.zip
+          test -f dist/engineering-addon.zip
+          test -f dist/obsidian-addon.zip
+          test -f dist/full.zip
+
+      - name: Resolve release tag
+        id: release_tag
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_tag.outputs.tag }}
+          name: ${{ steps.release_tag.outputs.tag }}
+          generate_release_notes: true
+          files: |
+            dist/fiction-core.zip
+            dist/engineering-addon.zip
+            dist/obsidian-addon.zip
+            dist/full.zip

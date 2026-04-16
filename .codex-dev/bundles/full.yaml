@@ -1,0 +1,9 @@
+name: full
+display_name: Fiction Full
+description: Combined plugin with fiction-core plus optional engineering and Obsidian addons.
+category: Writing
+include_shared: true
+includes:
+  - fiction-core
+  - engineering-addon
+  - obsidian-addon

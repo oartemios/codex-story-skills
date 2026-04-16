@@ -1,71 +1,72 @@
 # Установка
 
-## Стабильная установка
+Основной способ установки - через готовый plugin bundle из GitHub Release.
 
-Основной путь для пользователя:
+## Fiction Core
+
+`fiction-core` - пакет по умолчанию:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/oartemios/codex-story-skills/v0.1.0/scripts/install-package.sh -o /tmp/codex-story-skills-install.sh
-bash /tmp/codex-story-skills-install.sh --ref v0.1.0
+bash /tmp/codex-story-skills-install.sh --version v0.1.0
 ```
 
-Перед запуском можно просмотреть скачанный скрипт:
+Скрипт можно сначала прочитать:
 
 ```bash
 less /tmp/codex-story-skills-install.sh
 ```
 
-Этот способ не использует `curl | bash`: скрипт скачивается отдельным файлом, и его можно проверить перед запуском.
-
-При установке по release tag Git может вывести предупреждение про tag object или detached HEAD. Это нормально для стабильного тега; если установка завершается сообщением `Sync completed.`, пакет установлен корректно.
-
-## Ручная установка через clone
+## Optional Addons
 
 ```bash
-git clone --branch v0.1.0 https://github.com/oartemios/codex-story-skills.git
-cd codex-story-skills
-scripts/sync-to-codex.sh
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --plugin full --version v0.1.0
 ```
 
-Для последней версии разработки используй `main` вместо `v0.1.0`.
+Доступные plugin assets:
 
-Для установки в нестандартный каталог:
+- `fiction-core.zip`
+- `engineering-addon.zip`
+- `obsidian-addon.zip`
+- `full.zip`
+
+## What The Installer Does
+
+1. Downloads a GitHub Release asset.
+2. Unpacks the plugin under `~/plugins/<plugin-name>`.
+3. Adds or updates the plugin entry in `~/.agents/plugins/marketplace.json`.
+4. Leaves final installation to Codex plugin management.
+
+The installer does not copy raw skills into `~/.codex/skills`.
+
+## Custom Asset URL
+
+For local testing or private release assets:
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --ref v0.1.0 --dest /path/to/codex/skills
+bash /tmp/codex-story-skills-install.sh \
+  --plugin fiction-core \
+  --asset-url https://example.com/fiction-core.zip
 ```
 
-При ручной установке через clone можно использовать:
+## Custom Local Paths
 
 ```bash
-scripts/sync-to-codex.sh --dest /path/to/codex/skills
+bash /tmp/codex-story-skills-install.sh \
+  --plugin fiction-core \
+  --plugin-root /path/to/plugins \
+  --marketplace /path/to/.agents/plugins/marketplace.json
 ```
 
-## Предварительная проверка без изменений
+## Development Install
 
-При ручной установке через clone:
+Raw skill sync is an internal development helper, not the public install path:
 
 ```bash
-scripts/sync-to-codex.sh --dry-run
+python3 .codex-dev/scripts/build-plugins.py
+.codex-dev/scripts/sync-to-codex.sh --dry-run
 ```
 
-## Что делает безопасная синхронизация
-
-- валидирует пакет перед установкой
-- создает backup управляемых элементов в `~/.codex/skill-backups/`
-- заменяет старые симлинки, если они ещё остались
-- синхронизирует только runtime-слой `skills/`
-- не трогает посторонние элементы в `~/.codex/skills`, например `.system`
-
-Если указан `--dest`, backup по умолчанию создается в соседнем каталоге `skill-backups`.
-Путь backup можно переопределить через `--backup-root`.
-
-## Проверка после установки
-
-```bash
-ls -la ~/.codex/skills
-```
-
-В `~/.codex/skills` должны появиться каталоги `writer-assistant`, `story-analyst`, `project-bootstrap`, а также общие файлы `CONVENTIONS.md` и `_shared/`.
-
-Также должен появиться `continuity-keeper` и `project-orchestrator`.
+Use it only when testing source skills locally.

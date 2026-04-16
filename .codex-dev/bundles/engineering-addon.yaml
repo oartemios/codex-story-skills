@@ -1,0 +1,7 @@
+name: engineering-addon
+display_name: Engineering Addon
+description: Optional RFC/ADR support plugin for engineering decision records and design proposals.
+category: Productivity
+include_shared: false
+skills:
+  - rfc-adr-assistant

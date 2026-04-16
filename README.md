@@ -1,231 +1,114 @@
 # codex-story-skills
 
-![Skills CI](https://github.com/oartemios/codex-story-skills/actions/workflows/ci.yml/badge.svg)
+![Plugin CI](https://github.com/oartemios/codex-story-skills/actions/workflows/ci.yml/badge.svg)
 
-Codex skills для fiction-first проектов: канон, структура книги, сюжетная диагностика, миграция проектной базы и выбор следующего шага.
+Fiction-first Codex plugins for projects that need canon, structure, story diagnostics, continuity checks, and project bootstrap support.
 
-Пакет рассчитан на авторов и редакторов, которые ведут рабочую базу проекта в файлах и хотят, чтобы Codex помогал не только писать отдельные сцены, но и удерживать порядок: что уже канон, что пока идея, где сломалась структура, какой слой нужно трогать следующим.
+The default product is `fiction-core`. Engineering RFC/ADR support and Obsidian compatibility are optional addons.
 
-## Что входит
+## Packages
 
-- `project-orchestrator`: выбирает следующий skill, маршрут и порядок шагов
-- `continuity-keeper`: отслеживает изменения канона, сломанные связи и последствия правок
-- `writer-assistant`: собирает канон, структуру, персонажей, конфликтную матрицу и рабочие документы
-- `story-analyst`: диагностирует ритм, противоречия, арки и сюжетные риски
-- `project-bootstrap`: создает стартовую раскладку или выравнивает хаотичную базу
-- `developers-skills`: помогает писать, обновлять и проверять инженерные RFC/ADR
+- `fiction-core`: default fiction-first plugin
+- `engineering-addon`: optional RFC/ADR assistant
+- `obsidian-addon`: optional Obsidian vault compatibility
+- `full`: combined plugin with `fiction-core` plus optional addons
 
-Fiction-first skills работают как единая система, а `developers-skills` добавляет отдельный инженерный контур для RFC/ADR.
+## Quick Start
 
-Подробные границы каждого skill:
-
-- `SKILLS.md`
-
-## Быстрый старт
-
-Стабильная установка без ручного клонирования репозитория:
+Install the default plugin from a GitHub Release asset:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/oartemios/codex-story-skills/v0.1.0/scripts/install-package.sh -o /tmp/codex-story-skills-install.sh
-bash /tmp/codex-story-skills-install.sh --ref v0.1.0
+bash /tmp/codex-story-skills-install.sh --version v0.1.0
 ```
 
-Если хочешь сначала посмотреть, что будет выполнено:
+Install another package:
 
 ```bash
-less /tmp/codex-story-skills-install.sh
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --plugin full --version v0.1.0
 ```
 
-Этот путь не использует `curl | bash`: скрипт скачивается отдельным файлом, и его можно проверить перед запуском.
+The installer downloads a built plugin asset, unpacks it under `~/plugins`, registers it in `~/.agents/plugins/marketplace.json`, and leaves final installation to Codex plugin management.
 
-Если Git выводит предупреждение про tag object или detached HEAD при установке по `v0.1.0`, это нормально для release tag. Установка считается успешной, когда скрипт завершился сообщением `Sync completed.`.
+More details:
 
-Ручной вариант через clone:
+- `INSTALL.md`
 
-```bash
-git clone --branch v0.1.0 https://github.com/oartemios/codex-story-skills.git
-cd codex-story-skills
-scripts/sync-to-codex.sh
-```
+## Included Skills
 
-Для последней версии разработки используй `main` вместо `v0.1.0`. Для стабильной установки оставляй `v0.1.0`.
+`fiction-core` contains:
 
-При ручном варианте через clone можно заранее посмотреть, что будет синхронизировано:
+- `project-orchestrator`: chooses the next skill, route, and work order
+- `continuity-keeper`: checks canon changes, broken links, and consequences
+- `writer-assistant`: builds canon, structure, characters, conflicts, and working documents
+- `story-analyst`: diagnoses pacing, contradictions, arcs, and story risks
+- `project-bootstrap`: creates or aligns the project layout
 
-```bash
-scripts/sync-to-codex.sh --dry-run
-```
+Optional addons:
 
-После установки перезапусти Codex, чтобы он перечитал список skills.
+- `rfc-adr-assistant`: writes, updates, and reviews engineering RFC/ADR documents
+- `obsidian-compat`: maps fiction-first project files into optional Obsidian vault workflows
 
-Для установки в нестандартный каталог:
+Detailed skill boundaries:
 
-```bash
-scripts/sync-to-codex.sh --dest /path/to/codex/skills
-```
+- `SKILLS.md`
 
-## Проверка после установки
-
-Попробуй несколько запросов в Codex:
-
-- `Хочу проработать книгу 1`
-- `Что мне делать сначала, а что потом`
-- `Что изменилось после этих правок`
-- `Собери рабочий канон`
-- `Проверь ритм книги`
-- `Собери минимальный каркас проекта`
-- `Оформи ADR по этому решению`
-- `Напиши RFC для этой миграции`
-
-Если пакет работает корректно:
-
-- orchestration-задачи уходят в `project-orchestrator`
-- задачи про изменения версий уходят в `continuity-keeper`
-- канон и структура уходят в `writer-assistant`
-- диагностика уходит в `story-analyst`
-- стартовая сборка и миграция уходят в `project-bootstrap`
-- RFC/ADR уходят в `developers-skills`
-
-## Рекомендуемая структура проекта
-
-Skills ориентируются на такую раскладку:
-
-```text
-canon/
-characters/
-books/
-archive/
-inbox/
-```
-
-Это соглашение, а не жесткое требование. Пакет лучше всего подходит для проектов, которые уже используют похожую схему или могут сопоставить с ней свои материалы без тяжелой миграции.
-
-Смысл слоев:
-
-- `canon/`: подтвержденный рабочий канон и системные документы
-- `characters/`: персонажи и долгие арки
-- `books/`: материалы отдельных книг, глав, сцен и review
-- `archive/`: сохраненное, но не источник истины
-- `inbox/`: неразобранные заметки и сырой материал
-
-## Как работать
-
-Если непонятно, с чего начать, начни с `project-orchestrator`:
-
-```text
-Хочу довести книгу 1 до рабочего состояния. Что делать сначала?
-```
-
-Если нужно собрать рабочий слой:
-
-```text
-Собери current-canon.md по этим материалам.
-```
-
-Если материал уже собран и нужен разбор:
-
-```text
-Проверь ритм книги и укажи, где проседает напряжение.
-```
-
-Если после правок нужно понять последствия:
-
-```text
-Что теперь нужно синхронизировать после замены версии?
-```
-
-Больше сценариев первого запуска:
-
-- `EXAMPLES.md`
-
-Если установка или routing ведут себя не так, как ожидается:
-
-- `TROUBLESHOOTING.md`
-
-## Безопасная синхронизация
-
-`scripts/sync-to-codex.sh`:
-
-- валидирует пакет перед синхронизацией
-- создает backup управляемых элементов
-- аккуратно заменяет старые симлинки, если они остались
-- синхронизирует только runtime-слой `skills/`
-- не трогает посторонние элементы в `~/.codex/skills`, например `.system`
-
-Если указан `--dest`, backup по умолчанию создается в соседнем каталоге `skill-backups`.
-Путь backup можно переопределить через `--backup-root`.
-
-## Структура репозитория
+## Repository Layout
 
 ```text
 codex-story-skills/
+  .codex-dev/
+    skills/          # source of truth for atomic skills
+    bundles/         # internal bundle manifests
+    scripts/         # build, validation, and dev tooling
+  plugins/           # local generated plugin output, ignored except .gitkeep
+  scripts/           # user-facing install entrypoints only
   docs/
-  scripts/
-  CHANGELOG.md
-  CONTRIBUTING.md
-  EXAMPLES.md
-  INSTALL.md
-  LICENSE
   README.md
-  SECURITY.md
+  INSTALL.md
   SKILLS.md
-  TROUBLESHOOTING.md
-  skills/
-    CONVENTIONS.md
-    _shared/
-    continuity-keeper/
-    developers-skills/
-    project-bootstrap/
-    project-orchestrator/
-    story-analyst/
-    writer-assistant/
 ```
 
-Каталог `skills/` сохранен как корневой runtime-слой, чтобы внутренние ссылки вроде `skills/CONVENTIONS.md` и `skills/_shared/...` продолжали работать без дополнительной упаковки.
+Raw skills are not public install targets. Plugin bundles are generated artifacts built from `.codex-dev/skills/` during release packaging and are not committed with copied skills.
 
-## Разработка
+## Development
 
-Быстрый цикл:
+Build and validate plugins:
 
 ```bash
-python3 scripts/validate-skills.py
-scripts/sync-to-codex.sh --dry-run
-scripts/sync-to-codex.sh
+python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skills.py
+python3 .codex-dev/scripts/package-release-assets.py
 ```
 
-CI проверяет:
+Publish an install-ready release by pushing a version tag:
 
-- валидацию пакета
-- корректность YAML-шапок и внутренних markdown-ссылок
-- синтаксис shell-скриптов
-- dry-run безопасной синхронизации
-- реальную синхронизацию в изолированный fake Codex Home
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
 
-Подробные правила разработки:
+GitHub Actions uploads the plugin zip assets to the release.
 
-- `CONTRIBUTING.md`
+The old raw sync flow is retained only as an internal development helper:
 
-История релизов:
+```bash
+.codex-dev/scripts/sync-to-codex.sh --dry-run
+```
 
-- `CHANGELOG.md`
+Do not document raw sync as the main installation path.
 
-План развития:
+## Docs
 
-- `ROADMAP.md`
+- `docs/PLUGIN_FIRST_REFACTOR.md`: migration plan, file moves, build strategy, release asset strategy, install flow, and risks
+- `docs/RELEASE.md`: release workflow and asset contract
+- `EXAMPLES.md`: first-use prompts
+- `TROUBLESHOOTING.md`: installation and routing troubleshooting
+- `CONTRIBUTING.md`: source skill and plugin build workflow
+- `CHANGELOG.md`: release history
 
-Ручные regression-проверки routing:
+## License
 
-- `docs/SMOKE_TESTS.md`
-
-## Ограничения
-
-- Пакет заметно подстроен под fiction-first workflow.
-- Рекомендуемая структура проекта является соглашением, а не универсальным стандартом.
-- Основной язык пользовательских инструкций и документации — русский.
-- Naming и маршруты могут уточняться по мере появления внешних сценариев использования.
-
-## Лицензия
-
-Код и документация распространяются по лицензии MIT:
-
-- `LICENSE`
+MIT. See `LICENSE`.
