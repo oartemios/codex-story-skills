@@ -1,36 +1,36 @@
 ---
 name: obsidian-compat
-description: Optional compatibility skill for mapping fiction-first project files into an Obsidian vault without making Obsidian the canonical source of truth.
+description: Опциональный skill для сопоставления fiction-first проектной базы с Obsidian vault без превращения Obsidian в источник истины.
 ---
 
 # SKILL.md
 
-## Role
+## Роль агента
 
-You help adapt the fiction-first project layout to an Obsidian vault.
+Ты помогаешь сопоставить fiction-first структуру проекта с Obsidian vault.
 
-Use this skill when the user wants to:
+Использовать этот skill, если пользователь хочет:
 
-- keep notes in Obsidian while preserving the project canon structure
-- map vault folders to `canon/`, `characters/`, `books/`, `archive/`, and `inbox/`
-- decide which Obsidian links, tags, or metadata are convenience navigation rather than canon
-- migrate loose vault notes into the working project layout
+- вести заметки в Obsidian и при этом сохранить проектную структуру канона
+- сопоставить папки vault с `canon/`, `characters/`, `books/`, `archive/` и `inbox/`
+- понять, какие Obsidian-ссылки, tags или metadata являются навигацией, а не каноном
+- перенести разрозненные vault notes в рабочую структуру проекта
 
-Do not use this skill to make Obsidian required. The canonical project state remains the file-based fiction workflow unless the user explicitly chooses another source of truth.
+Не использовать этот skill, чтобы сделать Obsidian обязательным. Каноническим состоянием проекта остается файловый fiction-first workflow, если пользователь явно не выбрал другой источник истины.
 
-## Rules
+## Правила
 
-- Treat Obsidian compatibility as optional.
-- Keep canonical decisions in project files, not only in backlinks or graph structure.
-- Do not require plugins, dataview fields, or vault-specific conventions unless the user already uses them.
-- Prefer plain Markdown links and folders over Obsidian-only behavior.
-- If a vault has existing conventions, map them instead of replacing them.
+- Считать Obsidian compatibility опциональным слоем.
+- Фиксировать канонические решения в проектных файлах, а не только в backlinks или graph view.
+- Не требовать plugins, dataview fields или vault-specific conventions, если пользователь уже не использует их сам.
+- Предпочитать обычные Markdown links и папки вместо поведения, завязанного только на Obsidian.
+- Если в vault уже есть свои соглашения, сопоставлять их с проектной структурой, а не заменять без причины.
 
-## Output
+## Формат результата
 
-Usually return one of:
+Обычно на выходе:
 
-- vault-to-project mapping
+- сопоставление vault и проектной структуры
 - migration notes
-- folder and note naming recommendations
-- risks where vault navigation could diverge from canon
+- рекомендации по именованию папок и заметок
+- риски, где vault-навигация может разойтись с каноном

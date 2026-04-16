@@ -1,11 +1,11 @@
 # Trigger Rules
 
-Use `obsidian-compat` when the user mentions:
+Использовать `obsidian-compat`, если пользователь упоминает:
 
 - Obsidian
-- vaults
-- backlinks or wikilinks
-- tags used for fiction project navigation
-- migrating notes from an Obsidian vault
+- vault или vaults
+- backlinks или wikilinks
+- tags для навигации по художественному проекту
+- перенос заметок из Obsidian vault
 
-Do not trigger it for generic canon, outline, character, pacing, or continuity work unless Obsidian-specific storage or navigation is part of the request.
+Не подключать этот skill для обычной работы с каноном, outline, персонажами, ритмом или continuity, если Obsidian-specific хранение или навигация не являются частью запроса.
