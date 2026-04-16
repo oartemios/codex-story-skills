@@ -18,23 +18,23 @@ The default product is `fiction-core`. Engineering RFC/ADR support and Obsidian 
 Install the default plugin from a GitHub Release asset:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/oartemios/codex-story-skills/v0.1.0/scripts/install-package.sh -o /tmp/codex-story-skills-install.sh
-bash /tmp/codex-story-skills-install.sh --version v0.1.0
+curl -fsSL https://raw.githubusercontent.com/oartemios/codex-story-skills/v1.0.0/scripts/install-package.sh -o /tmp/codex-story-skills-install.sh
+bash /tmp/codex-story-skills-install.sh --version v1.0.0
 ```
 
 Install another package:
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v0.1.0
-bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v0.1.0
-bash /tmp/codex-story-skills-install.sh --plugin full --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v1.0.0
+bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v1.0.0
+bash /tmp/codex-story-skills-install.sh --plugin full --version v1.0.0
 ```
 
 Install a combination:
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v0.1.0
-bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --plugin obsidian-addon --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v1.0.0
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --plugin obsidian-addon --version v1.0.0
 ```
 
 The installer downloads a built plugin asset, unpacks it under `~/plugins`, registers it in `~/.agents/plugins/marketplace.json`, and leaves final installation to Codex plugin management.
@@ -100,8 +100,8 @@ Optional local git hooks:
 Publish an install-ready release by pushing a version tag:
 
 ```bash
-git tag v0.2.0
-git push origin v0.2.0
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 GitHub Actions uploads the plugin zip assets to the release.

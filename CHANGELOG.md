@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## v1.0.0 - 2026-04-16
+
 ### Added
 
 - Plugin-first package layout with `.codex-dev/` as source/build layer and `plugins/` as generated installable artifacts.

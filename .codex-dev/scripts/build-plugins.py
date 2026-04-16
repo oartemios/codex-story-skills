@@ -17,7 +17,7 @@ DEV_ROOT = REPO_ROOT / ".codex-dev"
 SKILLS_ROOT = DEV_ROOT / "skills"
 BUNDLES_ROOT = DEV_ROOT / "bundles"
 PLUGINS_ROOT = REPO_ROOT / "plugins"
-VERSION = "0.1.0"
+VERSION = "1.0.0"
 
 AUTHOR = {
     "name": "Artem Orlov",

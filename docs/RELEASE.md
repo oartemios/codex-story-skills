@@ -18,8 +18,8 @@ These files are built from `.codex-dev/bundles/*.yaml` and `.codex-dev/skills/`.
 Create and push a version tag:
 
 ```bash
-git tag v0.2.0
-git push origin v0.2.0
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 GitHub Actions runs `.github/workflows/release.yml`, builds plugin bundles, validates them, packages release assets, and uploads the zip files to the GitHub Release.

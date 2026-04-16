@@ -43,8 +43,8 @@ The language validator keeps skill instructions Russian-first while allowing Eng
 Install-ready releases are published by `.github/workflows/release.yml`.
 
 ```bash
-git tag v0.2.0
-git push origin v0.2.0
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 The release workflow builds plugin bundles from `.codex-dev/bundles/*.yaml`, validates them, packages zip assets, and uploads them to GitHub Release.
