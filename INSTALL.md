@@ -25,7 +25,7 @@ bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v0.1.0
 bash /tmp/codex-story-skills-install.sh --plugin full --version v0.1.0
 ```
 
-`obsidian-addon` устанавливается как самостоятельный пакет: он включает `fiction-core` и добавляет Obsidian compatibility.
+`obsidian-addon` устанавливается как самостоятельный пакет и может использоваться вместе с `fiction-core`, `engineering-addon` или обоими пакетами.
 
 Доступные plugin assets:
 

@@ -10,7 +10,7 @@ The default product is `fiction-core`. Engineering RFC/ADR support and Obsidian 
 
 - `fiction-core`: default fiction-first plugin
 - `engineering-addon`: optional RFC/ADR assistant
-- `obsidian-addon`: `fiction-core` plus Obsidian vault compatibility
+- `obsidian-addon`: optional Obsidian vault compatibility for the installed workflow
 - `full`: combined plugin with `fiction-core` plus optional addons
 
 ## Quick Start
@@ -49,7 +49,7 @@ More details:
 Optional addons:
 
 - `rfc-adr-assistant`: writes, updates, and reviews engineering RFC/ADR documents
-- `obsidian-compat`: maps fiction-first project files into optional Obsidian vault workflows; installed through `obsidian-addon` or `full`
+- `obsidian-compat`: maps the installed project workflow into optional Obsidian vault navigation
 
 Detailed skill boundaries:
 

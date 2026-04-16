@@ -62,8 +62,8 @@ jobs:
           test -f plugins/engineering-addon/.codex-plugin/plugin.json
           test -d plugins/engineering-addon/skills/rfc-adr-assistant
           test -f plugins/obsidian-addon/.codex-plugin/plugin.json
-          test -d plugins/obsidian-addon/skills/project-orchestrator
-          test -d plugins/obsidian-addon/skills/writer-assistant
+          test ! -d plugins/obsidian-addon/skills/project-orchestrator
+          test ! -d plugins/obsidian-addon/skills/rfc-adr-assistant
           test -d plugins/obsidian-addon/skills/obsidian-compat
           test -f dist/fiction-core.zip
           test -f dist/engineering-addon.zip

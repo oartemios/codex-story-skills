@@ -180,15 +180,15 @@
 
 ## obsidian-compat
 
-Помогает сопоставить fiction-first проект с Obsidian vault, не делая Obsidian обязательным источником истины.
+Помогает сопоставить установленный проектный workflow с Obsidian vault, не делая Obsidian обязательным источником истины.
 
-Поставляется в plugin `obsidian-addon`, который включает `fiction-core`, и в combined plugin `full`.
+Поставляется в optional plugin `obsidian-addon` и в combined plugin `full`.
 
 Использовать, если нужно:
 
-- разложить vault notes по `canon/`, `characters/`, `books/`, `archive/`, `inbox/`
+- разложить vault notes по структуре установленного доменного пакета
 - понять, какие backlinks, tags или wikilinks являются навигацией, а не каноном
-- мигрировать заметки из Obsidian без потери fiction-first структуры
+- мигрировать заметки из Obsidian без потери выбранной проектной структуры
 - проверить, где vault-навигация расходится с рабочим каноном
 
 Не использовать для обычной работы с каноном, сценами, арками или continuity, если Obsidian не является частью задачи.

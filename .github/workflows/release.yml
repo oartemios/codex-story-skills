@@ -49,10 +49,10 @@ jobs:
           test -f dist/obsidian-addon.zip
           test -f dist/full.zip
 
-      - name: Verify standalone Obsidian addon contents
+      - name: Verify independent Obsidian addon contents
         run: |
-          test -d plugins/obsidian-addon/skills/project-orchestrator
-          test -d plugins/obsidian-addon/skills/writer-assistant
+          test ! -d plugins/obsidian-addon/skills/project-orchestrator
+          test ! -d plugins/obsidian-addon/skills/rfc-adr-assistant
           test -d plugins/obsidian-addon/skills/obsidian-compat
 
       - name: Resolve release tag

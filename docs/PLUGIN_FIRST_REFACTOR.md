@@ -76,7 +76,7 @@ Bundle model:
 
 - `fiction-core`: default fiction package
 - `engineering-addon`: optional `rfc-adr-assistant`
-- `obsidian-addon`: `fiction-core` plus optional `obsidian-compat`
+- `obsidian-addon`: optional `obsidian-compat`, independent from domain packages
 - `full`: includes all current bundles
 
 Generated plugins include `.codex-plugin/plugin.json` and a generated `README.md`. They should not be edited manually or committed.
@@ -158,7 +158,7 @@ INSTALL now presents:
 - Existing users with raw skills installed under `~/.codex/skills` may keep stale copies until they remove or ignore them.
 - The skill rename from `developers-skills` to `rfc-adr-assistant` changes trigger names and documentation references.
 - Generated plugin bundles duplicate source skills only in local build output and release assets; `.codex-dev/skills/` remains canonical in git.
-- `obsidian-addon` is optional but installable on its own: it includes `fiction-core` plus Obsidian compatibility. It should not make Obsidian a required runtime or source of truth.
+- `obsidian-addon` is optional and installable on its own. It adapts to `fiction-core`, `engineering-addon`, or both when those packages are installed, but should not make Obsidian a required runtime or source of truth.
 - `full` can install overlapping skills if users also install individual addons. Prefer either `fiction-core` plus selected addons, or `full`, not both.
 - Release installation depends on uploaded zip assets matching the generated plugin directory names.
 - Marketplace registration writes to a local marketplace file; Codex may need restart or plugin management reload to show new entries.

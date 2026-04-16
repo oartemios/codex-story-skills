@@ -1,9 +1,7 @@
 name: obsidian-addon
 display_name: Obsidian Addon
-description: Fiction Core with optional Obsidian compatibility for mapping fiction-first projects into vault workflows.
+description: Optional Obsidian workspace compatibility for mapping installed project workflows into vault navigation.
 category: Writing
-include_shared: true
-includes:
-  - fiction-core
+include_shared: false
 skills:
   - obsidian-compat
