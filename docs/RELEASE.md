@@ -18,8 +18,8 @@ These files are built from `.codex-dev/bundles/*.yaml` and `.codex-dev/skills/`.
 Create and push a version tag:
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
 GitHub Actions runs `.github/workflows/release.yml`, builds plugin bundles, validates them, packages release assets, and uploads the zip files to the GitHub Release.
@@ -32,7 +32,7 @@ Before tagging:
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py
-python3 .codex-dev/scripts/validate-skill-language.py
+python3 .codex-dev/scripts/validate-language.py --scope all
 python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
 ```

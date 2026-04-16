@@ -1,4 +1,4 @@
-# Smoke Tests
+# Смоук-Тесты
 
 Ручной regression-набор для проверки routing и границ skills перед релизами.
 

@@ -2,6 +2,8 @@
 
 This repository is plugin-first.
 
+For repository layout and build architecture, see `docs/ARCHITECTURE.md`.
+
 ## Source Of Truth
 
 - Atomic source skills live only in `.codex-dev/skills/`.
@@ -16,7 +18,7 @@ Do not commit generated plugin bundles or copied skill trees. Change `.codex-dev
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py
-python3 .codex-dev/scripts/validate-skill-language.py
+python3 .codex-dev/scripts/validate-language.py --scope all
 python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
 ```
@@ -43,8 +45,8 @@ The language validator keeps skill instructions Russian-first while allowing Eng
 Install-ready releases are published by `.github/workflows/release.yml`.
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
 The release workflow builds plugin bundles from `.codex-dev/bundles/*.yaml`, validates them, packages zip assets, and uploads them to GitHub Release.
@@ -85,7 +87,7 @@ Bundle manifests are internal build inputs, not a user-facing API.
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py
-python3 .codex-dev/scripts/validate-skill-language.py
+python3 .codex-dev/scripts/validate-language.py --scope all
 python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
 bash -n scripts/install-package.sh .codex-dev/scripts/sync-to-codex.sh

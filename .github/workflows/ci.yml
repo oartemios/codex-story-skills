@@ -23,7 +23,7 @@ jobs:
         run: python3 .codex-dev/scripts/build-plugins.py
 
       - name: Validate skill language
-        run: python3 .codex-dev/scripts/validate-skill-language.py
+        run: python3 .codex-dev/scripts/validate-language.py --scope all
 
       - name: Validate source skills and plugins
         run: python3 .codex-dev/scripts/validate-skills.py
