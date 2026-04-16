@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/oartemios/codex-story-skills"
-VERSION="v1.0.0"
+VERSION="v1.0.1"
 PLUGINS=()
 ASSET_URL=""
 PLUGIN_ROOT="${HOME}/plugins"
@@ -33,7 +33,7 @@ Presets:
 
 Examples:
   scripts/install-package.sh
-  scripts/install-package.sh --plugin full --version v1.0.0
+  scripts/install-package.sh --plugin full --version v1.0.1
   scripts/install-package.sh --plugin engineering-addon --plugin obsidian-addon
   scripts/install-package.sh --preset obsidian-engineering
 EOF

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-python3 .codex-dev/scripts/validate-skill-language.py
+python3 .codex-dev/scripts/validate-language.py --scope all
 python3 .codex-dev/scripts/validate-skills.py

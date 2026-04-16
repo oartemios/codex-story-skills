@@ -7,8 +7,8 @@
 `fiction-core` - пакет по умолчанию:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/oartemios/codex-story-skills/v1.0.0/scripts/install-package.sh -o /tmp/codex-story-skills-install.sh
-bash /tmp/codex-story-skills-install.sh --version v1.0.0
+curl -fsSL https://raw.githubusercontent.com/oartemios/codex-story-skills/v1.0.1/scripts/install-package.sh -o /tmp/codex-story-skills-install.sh
+bash /tmp/codex-story-skills-install.sh --version v1.0.1
 ```
 
 Скрипт можно сначала прочитать:
@@ -17,17 +17,17 @@ bash /tmp/codex-story-skills-install.sh --version v1.0.0
 less /tmp/codex-story-skills-install.sh
 ```
 
-## Optional Addons
+## Опциональные Addons
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v1.0.0
-bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v1.0.0
-bash /tmp/codex-story-skills-install.sh --plugin full --version v1.0.0
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v1.0.1
+bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v1.0.1
+bash /tmp/codex-story-skills-install.sh --plugin full --version v1.0.1
 ```
 
 `obsidian-addon` устанавливается как самостоятельный пакет и может использоваться вместе с `fiction-core`, `engineering-addon` или обоими пакетами.
 
-## Plugin Combinations
+## Комбинации Plugins
 
 Можно установить несколько пакетов за один запуск:
 
@@ -35,13 +35,13 @@ bash /tmp/codex-story-skills-install.sh --plugin full --version v1.0.0
 bash /tmp/codex-story-skills-install.sh \
   --plugin engineering-addon \
   --plugin obsidian-addon \
-  --version v1.0.0
+  --version v1.0.1
 ```
 
 То же самое через preset:
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v1.0.0
+bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v1.0.1
 ```
 
 Доступные presets:
@@ -60,18 +60,18 @@ bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version 
 - `obsidian-addon.zip`
 - `full.zip`
 
-## What The Installer Does
+## Что делает Installer
 
-1. Downloads a GitHub Release asset.
-2. Unpacks the plugin under `~/plugins/<plugin-name>`.
-3. Adds or updates the plugin entry in `~/.agents/plugins/marketplace.json`.
-4. Leaves final installation to Codex plugin management.
+1. Скачивает GitHub Release asset.
+2. Распаковывает plugin в `~/plugins/<plugin-name>`.
+3. Добавляет или обновляет запись plugin в `~/.agents/plugins/marketplace.json`.
+4. Оставляет финальную установку на стороне Codex plugin management.
 
-The installer does not copy raw skills into `~/.codex/skills`.
+Installer не копирует raw skills в `~/.codex/skills`.
 
 ## Custom Asset URL
 
-For local testing or private release assets:
+Для локальной проверки или private release assets:
 
 ```bash
 bash /tmp/codex-story-skills-install.sh \
@@ -81,7 +81,7 @@ bash /tmp/codex-story-skills-install.sh \
 
 `--asset-url` работает только при установке одного plugin.
 
-## Custom Local Paths
+## Кастомные Локальные Пути
 
 ```bash
 bash /tmp/codex-story-skills-install.sh \
@@ -92,11 +92,11 @@ bash /tmp/codex-story-skills-install.sh \
 
 ## Development Install
 
-Raw skill sync is an internal development helper, not the public install path:
+Raw skill sync — внутренний development helper, а не публичный install path:
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py
 .codex-dev/scripts/sync-to-codex.sh --dry-run
 ```
 
-Use it only when testing source skills locally.
+Используй его только для локальной проверки source skills.

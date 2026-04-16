@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag to publish, for example v1.0.0"
+        description: "Release tag to publish, for example v1.0.1"
         required: true
         type: string
 
@@ -34,7 +34,7 @@ jobs:
         run: python3 .codex-dev/scripts/build-plugins.py
 
       - name: Validate skill language
-        run: python3 .codex-dev/scripts/validate-skill-language.py
+        run: python3 .codex-dev/scripts/validate-language.py --scope all
 
       - name: Validate source skills and plugins
         run: python3 .codex-dev/scripts/validate-skills.py

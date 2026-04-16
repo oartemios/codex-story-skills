@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+## v1.0.1 - 2026-04-16
+
+### Changed
+
+- Public README now focuses on product install/use, with internal architecture moved to `docs/ARCHITECTURE.md`.
+- Language validator now covers source skills and Russian-first public documentation.
+
 ## v1.0.0 - 2026-04-16
 
 ### Added

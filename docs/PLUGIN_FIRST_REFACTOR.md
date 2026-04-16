@@ -90,7 +90,7 @@ python3 .codex-dev/scripts/build-plugins.py
 Validation command:
 
 ```bash
-python3 .codex-dev/scripts/validate-skill-language.py
+python3 .codex-dev/scripts/validate-language.py --scope all
 python3 .codex-dev/scripts/validate-skills.py
 ```
 
@@ -125,15 +125,15 @@ User flow:
 Default:
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --version v1.0.0
+bash /tmp/codex-story-skills-install.sh --version v1.0.1
 ```
 
 Addon:
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v1.0.0
-bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --plugin obsidian-addon --version v1.0.0
-bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v1.0.0
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v1.0.1
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --plugin obsidian-addon --version v1.0.1
+bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v1.0.1
 ```
 
 ## 7. README And INSTALL Update Plan
