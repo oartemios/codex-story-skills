@@ -1,140 +1,72 @@
 # Troubleshooting
 
-Типовые проблемы при установке и первом запуске.
+## Release Asset Not Found
 
-## Codex не видит skills после установки
-
-Проверь, что установка прошла в тот Codex Home, который использует текущая сессия:
+Check the plugin name and version:
 
 ```bash
-ls -la ~/.codex/skills
+bash /tmp/codex-story-skills-install.sh --plugin fiction-core --version v0.1.0
 ```
 
-В каталоге должны быть:
+Valid plugin names:
 
-- `project-orchestrator`
-- `continuity-keeper`
-- `writer-assistant`
-- `story-analyst`
-- `project-bootstrap`
-- `CONVENTIONS.md`
-- `_shared`
+- `fiction-core`
+- `engineering-addon`
+- `obsidian-addon`
+- `full`
 
-После установки нужно перезапустить Codex. Skills перечитываются при старте сессии.
+For the latest GitHub Release asset:
 
-## Установка прошла, но срабатывает не тот skill
+```bash
+bash /tmp/codex-story-skills-install.sh --plugin fiction-core --version latest
+```
 
-Уточни тип работы и уровень проекта:
+## Marketplace Entry Is Missing
+
+The installer writes to:
 
 ```text
-Мне нужен маршрут, а не переписывание материала. Используй project-orchestrator и назови следующий skill.
+~/.agents/plugins/marketplace.json
 ```
 
-Или:
+The plugin is unpacked under:
 
 ```text
-Мне нужна сборка рабочего канона, а не диагностика качества. Используй writer-assistant.
+~/plugins/<plugin-name>
 ```
 
-Если задача неоднозначная, начни с `project-orchestrator`.
+If custom paths were used, confirm that the marketplace `source.path` points to the unpacked plugin directory.
 
-## Проект не использует canon/books/characters
+## Codex Does Not Show The Plugin
 
-Рекомендуемая структура не обязательна. Скажи Codex, как устроен проект:
-
-```text
-Моя структура отличается от canon/books/characters. Сначала сопоставь текущие папки с рекомендуемыми слоями и не переноси файлы без явного подтверждения.
-```
-
-Если структура хаотична, начни с:
-
-```text
-Сначала предложи migration plan через project-bootstrap. Не меняй файлы, пока я не подтвержу план.
-```
-
-## Хочу посмотреть изменения перед установкой
-
-Используй dry-run:
+Confirm the plugin manifest exists:
 
 ```bash
-scripts/sync-to-codex.sh --dry-run
+test -f ~/plugins/fiction-core/.codex-plugin/plugin.json
 ```
 
-Для нестандартного каталога:
+Then restart Codex or reopen plugin management so it reloads the local marketplace.
+
+## Wrong Skill Routes
+
+Confirm the expected package is installed:
+
+- `fiction-core` contains fiction project skills only.
+- `engineering-addon` adds `rfc-adr-assistant`.
+- `obsidian-addon` adds `obsidian-compat`.
+- `full` contains all current skills.
+
+## Development Build Looks Stale
+
+Generated plugins must be rebuilt from `.codex-dev/skills/`:
 
 ```bash
-scripts/sync-to-codex.sh --dry-run --dest /path/to/codex/skills
+python3 .codex-dev/scripts/build-plugins.py
+python3 .codex-dev/scripts/validate-skills.py
 ```
 
-## Нужно откатиться к backup
-
-При обычной установке backup создается в:
-
-```text
-~/.codex/skill-backups/<timestamp>/
-```
-
-При установке с `--dest /path/to/codex/skills` backup по умолчанию создается рядом:
-
-```text
-/path/to/codex/skill-backups/<timestamp>/
-```
-
-Для отката скопируй нужные элементы из backup обратно в каталог skills. Перед ручным откатом лучше закрыть активную сессию Codex.
-
-## `rsync` не найден
-
-Скрипты установки используют `rsync`.
-
-На macOS `rsync` обычно уже установлен. На Linux установи его через пакетный менеджер системы, например:
+Raw sync is internal-only and should be used only for local source testing:
 
 ```bash
-sudo apt-get install rsync
+.codex-dev/scripts/sync-to-codex.sh --dry-run
 ```
-
-После установки повтори:
-
-```bash
-scripts/sync-to-codex.sh --dry-run
-```
-
-## Нет прав на `~/.codex/skills`
-
-Проверь владельца и права:
-
-```bash
-ls -ld ~/.codex ~/.codex/skills
-```
-
-Каталог должен быть доступен текущему пользователю. Если он был создан другой учетной записью или через `sudo`, исправь права средствами системы и повтори dry-run.
-
-## GitHub clone не проходит
-
-Проверь доступ к GitHub и попробуй клонировать вручную:
-
-```bash
-git clone https://github.com/oartemios/codex-story-skills.git
-```
-
-Если сеть недоступна, можно использовать уже скачанную копию репозитория и запустить:
-
-```bash
-scripts/sync-to-codex.sh
-```
-
-## После обновления ответы стали хуже
-
-Сначала проверь, что Codex перечитал новую версию skills:
-
-1. Заверши текущую сессию Codex.
-2. Запусти новую сессию.
-3. Повтори минимальный smoke-test из `README.md`.
-
-Если проблема сохраняется, зафиксируй:
-
-- запрос
-- какой skill должен был сработать
-- какой skill сработал фактически
-- есть ли в проекте нестандартная структура
-
-Этого обычно достаточно, чтобы воспроизвести routing-проблему.

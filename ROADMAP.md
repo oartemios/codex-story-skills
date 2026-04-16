@@ -91,7 +91,7 @@
 
 Сделать:
 
-- расширить `scripts/validate-skills.py` — сделано
+- расширить `.codex-dev/scripts/validate-skills.py` — сделано
 - проверять markdown-ссылки в:
   - `README.md` — сделано
   - `INSTALL.md` — сделано

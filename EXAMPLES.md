@@ -134,6 +134,6 @@
 
 Ожидаемый маршрут:
 
-- `developers-skills` выберет ADR, если решение фиксируется
-- `developers-skills` выберет RFC, если решение еще обсуждается
+- `rfc-adr-assistant` выберет ADR, если решение фиксируется
+- `rfc-adr-assistant` выберет RFC, если решение еще обсуждается
 - неизвестные факты должны быть помечены как assumptions или open questions

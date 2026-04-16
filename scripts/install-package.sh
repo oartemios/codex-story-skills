@@ -1,43 +1,139 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="https://github.com/oartemios/codex-story-skills.git"
-REF="v0.1.0"
-WORKDIR=""
-DEST_DIR="${HOME}/.codex/skills"
+REPO_URL="https://github.com/oartemios/codex-story-skills"
+VERSION="v1.0.0"
+PLUGINS=()
+ASSET_URL=""
+PLUGIN_ROOT="${HOME}/plugins"
+MARKETPLACE_PATH="${HOME}/.agents/plugins/marketplace.json"
 
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/install-package.sh [--repo-url URL] [--ref REF] [--workdir PATH] [--dest PATH]
+  scripts/install-package.sh [--plugin NAME]... [--preset NAME] [--version VERSION] [--repo-url URL] [--asset-url URL]
+                             [--plugin-root PATH] [--marketplace PATH]
 
-Behavior:
-  1. Clones the package
-  2. Validates it
-  3. Safely syncs it into Codex Home
-  4. Prints a short overview and example prompts
+Installs built Codex plugin release assets locally and registers them in the
+local marketplace. Default plugin: fiction-core.
 
-Defaults:
-  --ref v0.1.0
+Plugins:
+  fiction-core        Default fiction-first package
+  engineering-addon   Optional RFC/ADR support
+  obsidian-addon      Optional Obsidian workspace compatibility
+  full                fiction-core plus optional addons
+
+Presets:
+  fiction             fiction-core
+  engineering         engineering-addon
+  obsidian            obsidian-addon
+  obsidian-fiction    fiction-core + obsidian-addon
+  obsidian-engineering engineering-addon + obsidian-addon
+  full                full
+
+Examples:
+  scripts/install-package.sh
+  scripts/install-package.sh --plugin full --version v1.0.0
+  scripts/install-package.sh --plugin engineering-addon --plugin obsidian-addon
+  scripts/install-package.sh --preset obsidian-engineering
 EOF
+}
+
+add_plugin() {
+  local plugin="$1"
+  case "${plugin}" in
+    fiction-core|engineering-addon|obsidian-addon|full)
+      ;;
+    *)
+      echo "Unknown plugin: ${plugin}" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+
+  local existing
+  for existing in "${PLUGINS[@]}"; do
+    if [[ "${existing}" == "${plugin}" ]]; then
+      return
+    fi
+  done
+  PLUGINS+=("${plugin}")
+}
+
+add_plugin_list() {
+  local list="$1"
+  local old_ifs="${IFS}"
+  IFS=","
+  read -ra items <<< "${list}"
+  IFS="${old_ifs}"
+
+  local item
+  for item in "${items[@]}"; do
+    item="${item//[[:space:]]/}"
+    if [[ -n "${item}" ]]; then
+      add_plugin "${item}"
+    fi
+  done
+}
+
+add_preset() {
+  case "$1" in
+    fiction)
+      add_plugin fiction-core
+      ;;
+    engineering)
+      add_plugin engineering-addon
+      ;;
+    obsidian)
+      add_plugin obsidian-addon
+      ;;
+    obsidian-fiction)
+      add_plugin fiction-core
+      add_plugin obsidian-addon
+      ;;
+    obsidian-engineering)
+      add_plugin engineering-addon
+      add_plugin obsidian-addon
+      ;;
+    full)
+      add_plugin full
+      ;;
+    *)
+      echo "Unknown preset: $1" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --plugin)
+      add_plugin_list "$2"
+      shift 2
+      ;;
+    --preset)
+      add_preset "$2"
+      shift 2
+      ;;
+    --version|--ref)
+      VERSION="$2"
+      shift 2
+      ;;
     --repo-url)
       REPO_URL="$2"
       shift 2
       ;;
-    --ref)
-      REF="$2"
+    --asset-url)
+      ASSET_URL="$2"
       shift 2
       ;;
-    --workdir)
-      WORKDIR="$2"
+    --plugin-root)
+      PLUGIN_ROOT="$2"
       shift 2
       ;;
-    --dest)
-      DEST_DIR="$2"
+    --marketplace)
+      MARKETPLACE_PATH="$2"
       shift 2
       ;;
     -h|--help)
@@ -52,50 +148,129 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-cleanup() {
-  if [[ -n "${TEMP_DIR:-}" && -d "${TEMP_DIR}" ]]; then
-    rm -rf "${TEMP_DIR}"
-  fi
-}
-
-if [[ -z "${WORKDIR}" ]]; then
-  TEMP_DIR="$(mktemp -d)"
-  trap cleanup EXIT
-  CLONE_PARENT="${TEMP_DIR}"
-else
-  mkdir -p "${WORKDIR}"
-  CLONE_PARENT="${WORKDIR}"
+if [[ ${#PLUGINS[@]} -eq 0 ]]; then
+  add_plugin fiction-core
 fi
 
-CLONE_DIR="${CLONE_PARENT}/codex-story-skills"
+if [[ -n "${ASSET_URL}" && ${#PLUGINS[@]} -ne 1 ]]; then
+  echo "--asset-url can only be used when installing exactly one plugin" >&2
+  exit 1
+fi
 
-echo "==> Cloning ${REPO_URL} (${REF})"
-git -c advice.detachedHead=false clone --depth 1 --branch "${REF}" "${REPO_URL}" "${CLONE_DIR}"
+command -v curl >/dev/null || { echo "curl is required" >&2; exit 1; }
+command -v unzip >/dev/null || { echo "unzip is required" >&2; exit 1; }
+command -v python3 >/dev/null || { echo "python3 is required" >&2; exit 1; }
 
-echo
-echo "==> Installing into ${DEST_DIR}"
-"${CLONE_DIR}/scripts/sync-to-codex.sh" --dest "${DEST_DIR}"
+TEMP_DIR="$(mktemp -d)"
+cleanup() {
+  rm -rf "${TEMP_DIR}"
+}
+trap cleanup EXIT
 
-echo
-echo "==> Пакет установлен"
-echo "Возможности:"
-echo " - project-orchestrator: помогает выбрать следующий skill и маршрут работы"
-echo " - continuity-keeper: отслеживает изменения канона и сломанные связи"
-echo " - writer-assistant: собирает канон, структуру, персонажей и рабочий слой"
-echo " - story-analyst: проводит диагностику ритма, арок и противоречий"
-echo " - project-bootstrap: создает или выравнивает структуру проекта"
-echo
-echo "Примеры запросов:"
-echo " - \"Хочу проработать книгу 1\""
-echo " - \"Собери канон после серии решений\""
-echo " - \"Проверь, что сломалось после правок\""
-echo " - \"Подготовь книгу к диагностике\""
-echo " - \"С чего начать новый художественный проект\""
-echo
-echo "Документация:"
-BASE_URL="${REPO_URL%.git}"
-echo " - README: ${BASE_URL}/blob/${REF}/README.md"
-echo " - INSTALL: ${BASE_URL}/blob/${REF}/INSTALL.md"
-echo " - CONTRIBUTING: ${BASE_URL}/blob/${REF}/CONTRIBUTING.md"
-echo
-echo "Перезапусти Codex, чтобы он перечитал список skills."
+mkdir -p "${PLUGIN_ROOT}" "$(dirname "${MARKETPLACE_PATH}")"
+
+INSTALLED=()
+
+for PLUGIN in "${PLUGINS[@]}"; do
+  if [[ -n "${ASSET_URL}" ]]; then
+    CURRENT_ASSET_URL="${ASSET_URL}"
+  elif [[ "${VERSION}" == "latest" ]]; then
+    CURRENT_ASSET_URL="${REPO_URL}/releases/latest/download/${PLUGIN}.zip"
+  else
+    CURRENT_ASSET_URL="${REPO_URL}/releases/download/${VERSION}/${PLUGIN}.zip"
+  fi
+
+  ASSET_PATH="${TEMP_DIR}/${PLUGIN}.zip"
+  EXTRACT_DIR="${TEMP_DIR}/extract-${PLUGIN}"
+  TARGET_DIR="${PLUGIN_ROOT}/${PLUGIN}"
+
+  mkdir -p "${EXTRACT_DIR}"
+
+  echo "==> Downloading ${CURRENT_ASSET_URL}"
+  curl -fsSL "${CURRENT_ASSET_URL}" -o "${ASSET_PATH}"
+
+  echo "==> Unpacking ${PLUGIN}"
+  unzip -q "${ASSET_PATH}" -d "${EXTRACT_DIR}"
+
+  if [[ -d "${EXTRACT_DIR}/${PLUGIN}" ]]; then
+    UNPACKED_DIR="${EXTRACT_DIR}/${PLUGIN}"
+  else
+    UNPACKED_DIR="${EXTRACT_DIR}"
+  fi
+
+  if [[ ! -f "${UNPACKED_DIR}/.codex-plugin/plugin.json" ]]; then
+    echo "Release asset does not contain .codex-plugin/plugin.json" >&2
+    exit 1
+  fi
+
+  if [[ -e "${TARGET_DIR}" ]]; then
+    BACKUP_DIR="${PLUGIN_ROOT}/.${PLUGIN}.backup.$(date +"%Y-%m-%d_%H-%M-%S")"
+    echo "==> Moving existing ${PLUGIN} to ${BACKUP_DIR}"
+    mv "${TARGET_DIR}" "${BACKUP_DIR}"
+  fi
+
+  mv "${UNPACKED_DIR}" "${TARGET_DIR}"
+  INSTALLED+=("${PLUGIN}")
+
+  echo "==> Registering ${PLUGIN} in ${MARKETPLACE_PATH}"
+  PLUGIN_NAME="${PLUGIN}" \
+  PLUGIN_DIR="${TARGET_DIR}" \
+MARKETPLACE_PATH="${MARKETPLACE_PATH}" \
+python3 - <<'PY'
+import json
+import os
+from pathlib import Path
+
+plugin_name = os.environ["PLUGIN_NAME"]
+plugin_dir = Path(os.environ["PLUGIN_DIR"]).expanduser().resolve()
+marketplace_path = Path(os.environ["MARKETPLACE_PATH"]).expanduser().resolve()
+marketplace_root = marketplace_path.parent
+home_plugin_dir = (Path.home() / "plugins" / plugin_name).resolve()
+
+if plugin_dir == home_plugin_dir and marketplace_path == (Path.home() / ".agents" / "plugins" / "marketplace.json").resolve():
+    source_path = f"./plugins/{plugin_name}"
+else:
+    source_path = "./" + os.path.relpath(plugin_dir, marketplace_root)
+
+if marketplace_path.exists():
+    data = json.loads(marketplace_path.read_text(encoding="utf-8"))
+else:
+    data = {
+        "name": "local",
+        "interface": {"displayName": "Local Plugins"},
+        "plugins": [],
+    }
+
+plugins = data.setdefault("plugins", [])
+entry = {
+    "name": plugin_name,
+    "source": {
+        "source": "local",
+        "path": source_path,
+    },
+    "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL",
+    },
+    "category": "Writing",
+}
+
+for index, existing in enumerate(plugins):
+    if existing.get("name") == plugin_name:
+        plugins[index] = entry
+        break
+else:
+    plugins.append(entry)
+
+marketplace_path.write_text(
+    json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+    encoding="utf-8",
+)
+PY
+
+done
+
+echo "Installed plugins: ${INSTALLED[*]}"
+echo "Plugin root: ${PLUGIN_ROOT}"
+echo "Marketplace: ${MARKETPLACE_PATH}"
+echo "Open Codex plugin management and install the registered plugins from the local marketplace."

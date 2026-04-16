@@ -1,4 +1,4 @@
-name: Skills CI
+name: Plugin CI
 
 on:
   push:
@@ -19,30 +19,58 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Validate skills package
-        run: python3 scripts/validate-skills.py
+      - name: Build plugin bundles
+        run: python3 .codex-dev/scripts/build-plugins.py
+
+      - name: Validate skill language
+        run: python3 .codex-dev/scripts/validate-skill-language.py
+
+      - name: Validate source skills and plugins
+        run: python3 .codex-dev/scripts/validate-skills.py
 
       - name: Check shell scripts syntax
-        run: bash -n scripts/sync-to-codex.sh scripts/install-package.sh
+        run: bash -n scripts/install-package.sh .codex-dev/scripts/sync-to-codex.sh
 
       - name: Check installer help
         run: scripts/install-package.sh --help
 
-      - name: Dry-run sync to fake Codex Home
+      - name: Package release assets
+        run: python3 .codex-dev/scripts/package-release-assets.py
+
+      - name: Dry-run raw sync to fake Codex Home
         env:
           HOME: ${{ runner.temp }}/fake-home
         run: |
           mkdir -p "$HOME/.codex/skills/.system"
-          scripts/sync-to-codex.sh --dry-run
+          .codex-dev/scripts/sync-to-codex.sh --dry-run
 
-      - name: Real sync to fake Codex Home
+      - name: Real raw sync to fake Codex Home
         env:
           HOME: ${{ runner.temp }}/fake-home
         run: |
           mkdir -p "$HOME/.codex/skills/.system"
-          scripts/sync-to-codex.sh
+          .codex-dev/scripts/sync-to-codex.sh
 
-      - name: Verify installed package
+      - name: Verify generated plugin package
+        run: |
+          test -f plugins/fiction-core/.codex-plugin/plugin.json
+          test -d plugins/fiction-core/skills/project-orchestrator
+          test -d plugins/fiction-core/skills/continuity-keeper
+          test -d plugins/fiction-core/skills/writer-assistant
+          test -d plugins/fiction-core/skills/story-analyst
+          test -d plugins/fiction-core/skills/project-bootstrap
+          test -f plugins/engineering-addon/.codex-plugin/plugin.json
+          test -d plugins/engineering-addon/skills/rfc-adr-assistant
+          test -f plugins/obsidian-addon/.codex-plugin/plugin.json
+          test ! -d plugins/obsidian-addon/skills/project-orchestrator
+          test ! -d plugins/obsidian-addon/skills/rfc-adr-assistant
+          test -d plugins/obsidian-addon/skills/obsidian-compat
+          test -f dist/fiction-core.zip
+          test -f dist/engineering-addon.zip
+          test -f dist/obsidian-addon.zip
+          test -f dist/full.zip
+
+      - name: Verify raw dev sync package
         env:
           HOME: ${{ runner.temp }}/fake-home
         run: |

@@ -11,7 +11,7 @@ DRY_RUN=0
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/sync-to-codex.sh [--dry-run] [--dest PATH] [--backup-root PATH]
+  .codex-dev/scripts/sync-to-codex.sh [--dry-run] [--dest PATH] [--backup-root PATH]
 
 Options:
   --dry-run           Show what would be synced without changing ~/.codex/skills

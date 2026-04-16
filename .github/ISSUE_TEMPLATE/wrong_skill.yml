@@ -13,8 +13,8 @@ body:
     id: version
     attributes:
       label: Package version or git ref
-      description: "Example: v0.1.0, main, or a commit SHA."
-      placeholder: v0.1.0
+      description: "Example: v1.0.0, main, or a commit SHA."
+      placeholder: v1.0.0
     validations:
       required: true
   - type: textarea

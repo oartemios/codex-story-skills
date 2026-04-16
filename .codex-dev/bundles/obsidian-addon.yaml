@@ -1,0 +1,7 @@
+name: obsidian-addon
+display_name: Obsidian Addon
+description: Optional Obsidian workspace compatibility for mapping installed project workflows into vault navigation.
+category: Writing
+include_shared: false
+skills:
+  - obsidian-compat

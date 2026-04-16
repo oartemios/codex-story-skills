@@ -1,3 +1,5 @@
-.DS_Store
-Thumbs.db
-.obsidian/
+dist/
+__pycache__/
+*.py[cod]
+plugins/*
+!plugins/.gitkeep
