@@ -27,6 +27,32 @@ bash /tmp/codex-story-skills-install.sh --plugin full --version v0.1.0
 
 `obsidian-addon` устанавливается как самостоятельный пакет и может использоваться вместе с `fiction-core`, `engineering-addon` или обоими пакетами.
 
+## Plugin Combinations
+
+Можно установить несколько пакетов за один запуск:
+
+```bash
+bash /tmp/codex-story-skills-install.sh \
+  --plugin engineering-addon \
+  --plugin obsidian-addon \
+  --version v0.1.0
+```
+
+То же самое через preset:
+
+```bash
+bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v0.1.0
+```
+
+Доступные presets:
+
+- `fiction`: `fiction-core`
+- `engineering`: `engineering-addon`
+- `obsidian`: `obsidian-addon`
+- `obsidian-fiction`: `fiction-core` + `obsidian-addon`
+- `obsidian-engineering`: `engineering-addon` + `obsidian-addon`
+- `full`: `full`
+
 Доступные plugin assets:
 
 - `fiction-core.zip`
@@ -52,6 +78,8 @@ bash /tmp/codex-story-skills-install.sh \
   --plugin fiction-core \
   --asset-url https://example.com/fiction-core.zip
 ```
+
+`--asset-url` работает только при установке одного plugin.
 
 ## Custom Local Paths
 

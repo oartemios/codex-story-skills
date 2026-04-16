@@ -57,3 +57,5 @@ https://github.com/oartemios/codex-story-skills/releases/download/<tag>/<plugin>
 ```
 
 Do not rename release assets without updating `scripts/install-package.sh` and install docs.
+
+The installer supports multiple plugins in one run, so every independently installable asset must be present in each release.

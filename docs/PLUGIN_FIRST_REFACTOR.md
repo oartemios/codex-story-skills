@@ -132,6 +132,8 @@ Addon:
 
 ```bash
 bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --plugin obsidian-addon --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v0.1.0
 ```
 
 ## 7. README And INSTALL Update Plan

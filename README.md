@@ -30,6 +30,13 @@ bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v0.1.0
 bash /tmp/codex-story-skills-install.sh --plugin full --version v0.1.0
 ```
 
+Install a combination:
+
+```bash
+bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v0.1.0
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --plugin obsidian-addon --version v0.1.0
+```
+
 The installer downloads a built plugin asset, unpacks it under `~/plugins`, registers it in `~/.agents/plugins/marketplace.json`, and leaves final installation to Codex plugin management.
 
 More details:

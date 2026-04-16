@@ -14,6 +14,7 @@ All notable changes to this project are documented here.
 - GitHub Actions release workflow that uploads install-ready plugin zip assets.
 - Skill language validator and opt-in local git hooks for pre-commit/pre-push checks.
 - `obsidian-addon` remains independent and can be combined with `fiction-core`, `engineering-addon`, or both.
+- Installer now supports multiple `--plugin` arguments and named presets such as `obsidian-engineering`.
 
 ### Changed
 

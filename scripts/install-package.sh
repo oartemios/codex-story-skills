@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_URL="https://github.com/oartemios/codex-story-skills"
 VERSION="v0.1.0"
-PLUGIN="fiction-core"
+PLUGINS=()
 ASSET_URL=""
 PLUGIN_ROOT="${HOME}/plugins"
 MARKETPLACE_PATH="${HOME}/.agents/plugins/marketplace.json"
@@ -11,10 +11,10 @@ MARKETPLACE_PATH="${HOME}/.agents/plugins/marketplace.json"
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/install-package.sh [--plugin NAME] [--version VERSION] [--asset-url URL]
+  scripts/install-package.sh [--plugin NAME]... [--preset NAME] [--version VERSION] [--repo-url URL] [--asset-url URL]
                              [--plugin-root PATH] [--marketplace PATH]
 
-Installs a built Codex plugin release asset locally and registers it in the
+Installs built Codex plugin release assets locally and registers them in the
 local marketplace. Default plugin: fiction-core.
 
 Plugins:
@@ -23,21 +23,105 @@ Plugins:
   obsidian-addon      Optional Obsidian workspace compatibility
   full                fiction-core plus optional addons
 
+Presets:
+  fiction             fiction-core
+  engineering         engineering-addon
+  obsidian            obsidian-addon
+  obsidian-fiction    fiction-core + obsidian-addon
+  obsidian-engineering engineering-addon + obsidian-addon
+  full                full
+
 Examples:
   scripts/install-package.sh
   scripts/install-package.sh --plugin full --version v0.1.0
-  scripts/install-package.sh --plugin engineering-addon
+  scripts/install-package.sh --plugin engineering-addon --plugin obsidian-addon
+  scripts/install-package.sh --preset obsidian-engineering
 EOF
+}
+
+add_plugin() {
+  local plugin="$1"
+  case "${plugin}" in
+    fiction-core|engineering-addon|obsidian-addon|full)
+      ;;
+    *)
+      echo "Unknown plugin: ${plugin}" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+
+  local existing
+  for existing in "${PLUGINS[@]}"; do
+    if [[ "${existing}" == "${plugin}" ]]; then
+      return
+    fi
+  done
+  PLUGINS+=("${plugin}")
+}
+
+add_plugin_list() {
+  local list="$1"
+  local old_ifs="${IFS}"
+  IFS=","
+  read -ra items <<< "${list}"
+  IFS="${old_ifs}"
+
+  local item
+  for item in "${items[@]}"; do
+    item="${item//[[:space:]]/}"
+    if [[ -n "${item}" ]]; then
+      add_plugin "${item}"
+    fi
+  done
+}
+
+add_preset() {
+  case "$1" in
+    fiction)
+      add_plugin fiction-core
+      ;;
+    engineering)
+      add_plugin engineering-addon
+      ;;
+    obsidian)
+      add_plugin obsidian-addon
+      ;;
+    obsidian-fiction)
+      add_plugin fiction-core
+      add_plugin obsidian-addon
+      ;;
+    obsidian-engineering)
+      add_plugin engineering-addon
+      add_plugin obsidian-addon
+      ;;
+    full)
+      add_plugin full
+      ;;
+    *)
+      echo "Unknown preset: $1" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --plugin)
-      PLUGIN="$2"
+      add_plugin_list "$2"
+      shift 2
+      ;;
+    --preset)
+      add_preset "$2"
       shift 2
       ;;
     --version|--ref)
       VERSION="$2"
+      shift 2
+      ;;
+    --repo-url)
+      REPO_URL="$2"
       shift 2
       ;;
     --asset-url)
@@ -64,22 +148,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-case "${PLUGIN}" in
-  fiction-core|engineering-addon|obsidian-addon|full)
-    ;;
-  *)
-    echo "Unknown plugin: ${PLUGIN}" >&2
-    usage >&2
-    exit 1
-    ;;
-esac
+if [[ ${#PLUGINS[@]} -eq 0 ]]; then
+  add_plugin fiction-core
+fi
 
-if [[ -z "${ASSET_URL}" ]]; then
-  if [[ "${VERSION}" == "latest" ]]; then
-    ASSET_URL="${REPO_URL}/releases/latest/download/${PLUGIN}.zip"
-  else
-    ASSET_URL="${REPO_URL}/releases/download/${VERSION}/${PLUGIN}.zip"
-  fi
+if [[ -n "${ASSET_URL}" && ${#PLUGINS[@]} -ne 1 ]]; then
+  echo "--asset-url can only be used when installing exactly one plugin" >&2
+  exit 1
 fi
 
 command -v curl >/dev/null || { echo "curl is required" >&2; exit 1; }
@@ -92,40 +167,54 @@ cleanup() {
 }
 trap cleanup EXIT
 
-ASSET_PATH="${TEMP_DIR}/${PLUGIN}.zip"
-EXTRACT_DIR="${TEMP_DIR}/extract"
-TARGET_DIR="${PLUGIN_ROOT}/${PLUGIN}"
+mkdir -p "${PLUGIN_ROOT}" "$(dirname "${MARKETPLACE_PATH}")"
 
-mkdir -p "${EXTRACT_DIR}" "${PLUGIN_ROOT}" "$(dirname "${MARKETPLACE_PATH}")"
+INSTALLED=()
 
-echo "==> Downloading ${ASSET_URL}"
-curl -fsSL "${ASSET_URL}" -o "${ASSET_PATH}"
+for PLUGIN in "${PLUGINS[@]}"; do
+  if [[ -n "${ASSET_URL}" ]]; then
+    CURRENT_ASSET_URL="${ASSET_URL}"
+  elif [[ "${VERSION}" == "latest" ]]; then
+    CURRENT_ASSET_URL="${REPO_URL}/releases/latest/download/${PLUGIN}.zip"
+  else
+    CURRENT_ASSET_URL="${REPO_URL}/releases/download/${VERSION}/${PLUGIN}.zip"
+  fi
 
-echo "==> Unpacking ${PLUGIN}"
-unzip -q "${ASSET_PATH}" -d "${EXTRACT_DIR}"
+  ASSET_PATH="${TEMP_DIR}/${PLUGIN}.zip"
+  EXTRACT_DIR="${TEMP_DIR}/extract-${PLUGIN}"
+  TARGET_DIR="${PLUGIN_ROOT}/${PLUGIN}"
 
-if [[ -d "${EXTRACT_DIR}/${PLUGIN}" ]]; then
-  UNPACKED_DIR="${EXTRACT_DIR}/${PLUGIN}"
-else
-  UNPACKED_DIR="${EXTRACT_DIR}"
-fi
+  mkdir -p "${EXTRACT_DIR}"
 
-if [[ ! -f "${UNPACKED_DIR}/.codex-plugin/plugin.json" ]]; then
-  echo "Release asset does not contain .codex-plugin/plugin.json" >&2
-  exit 1
-fi
+  echo "==> Downloading ${CURRENT_ASSET_URL}"
+  curl -fsSL "${CURRENT_ASSET_URL}" -o "${ASSET_PATH}"
 
-if [[ -e "${TARGET_DIR}" ]]; then
-  BACKUP_DIR="${PLUGIN_ROOT}/.${PLUGIN}.backup.$(date +"%Y-%m-%d_%H-%M-%S")"
-  echo "==> Moving existing ${PLUGIN} to ${BACKUP_DIR}"
-  mv "${TARGET_DIR}" "${BACKUP_DIR}"
-fi
+  echo "==> Unpacking ${PLUGIN}"
+  unzip -q "${ASSET_PATH}" -d "${EXTRACT_DIR}"
 
-mv "${UNPACKED_DIR}" "${TARGET_DIR}"
+  if [[ -d "${EXTRACT_DIR}/${PLUGIN}" ]]; then
+    UNPACKED_DIR="${EXTRACT_DIR}/${PLUGIN}"
+  else
+    UNPACKED_DIR="${EXTRACT_DIR}"
+  fi
 
-echo "==> Registering ${PLUGIN} in ${MARKETPLACE_PATH}"
-PLUGIN_NAME="${PLUGIN}" \
-PLUGIN_DIR="${TARGET_DIR}" \
+  if [[ ! -f "${UNPACKED_DIR}/.codex-plugin/plugin.json" ]]; then
+    echo "Release asset does not contain .codex-plugin/plugin.json" >&2
+    exit 1
+  fi
+
+  if [[ -e "${TARGET_DIR}" ]]; then
+    BACKUP_DIR="${PLUGIN_ROOT}/.${PLUGIN}.backup.$(date +"%Y-%m-%d_%H-%M-%S")"
+    echo "==> Moving existing ${PLUGIN} to ${BACKUP_DIR}"
+    mv "${TARGET_DIR}" "${BACKUP_DIR}"
+  fi
+
+  mv "${UNPACKED_DIR}" "${TARGET_DIR}"
+  INSTALLED+=("${PLUGIN}")
+
+  echo "==> Registering ${PLUGIN} in ${MARKETPLACE_PATH}"
+  PLUGIN_NAME="${PLUGIN}" \
+  PLUGIN_DIR="${TARGET_DIR}" \
 MARKETPLACE_PATH="${MARKETPLACE_PATH}" \
 python3 - <<'PY'
 import json
@@ -179,7 +268,9 @@ marketplace_path.write_text(
 )
 PY
 
-echo "Installed plugin: ${PLUGIN}"
-echo "Plugin path: ${TARGET_DIR}"
+done
+
+echo "Installed plugins: ${INSTALLED[*]}"
+echo "Plugin root: ${PLUGIN_ROOT}"
 echo "Marketplace: ${MARKETPLACE_PATH}"
-echo "Open Codex plugin management and install ${PLUGIN} from the local marketplace."
+echo "Open Codex plugin management and install the registered plugins from the local marketplace."
