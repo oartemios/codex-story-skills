@@ -7,10 +7,10 @@
 ```text
 codex-story-skills/
   .codex-dev/
-    skills/          # источник истины для atomic skills
+    skills/          # legacy source for unmigrated atomic skills
     scripts/         # сборка, валидация, release и dev tooling
   src/
-    content/         # agent-neutral pilot source
+    content/         # agent-neutral source for migrated skills and shared content
     modules/         # agent-neutral product manifests
   plugins/           # ignored локальный build output
   scripts/           # публичные install entrypoints
@@ -21,7 +21,7 @@ codex-story-skills/
 
 ## Источник истины
 
-Legacy atomic skills пока живут в `.codex-dev/skills/`. Agent-neutral pilot source уже живет в `src/content/`: shared conventions, shared templates и `obsidian-compat`.
+Legacy atomic skills, которые еще не мигрированы, остаются в `.codex-dev/skills/`. Migrated agent-neutral source lives in `src/content/skills/`, and shared content remains in `src/content/`.
 
 Product manifests лежат в `src/modules/*.yaml` и описывают, какие skills попадают в каждый plugin release asset. Это первый вынесенный agent-neutral слой целевой multi-agent packaging модели.
 

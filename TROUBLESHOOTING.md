@@ -58,7 +58,10 @@ test -f ~/plugins/fiction-core/.codex-plugin/plugin.json
 
 ## Development Build Устарел
 
-Generated plugins нужно пересобрать из `.codex-dev/skills/`:
+Generated plugins нужно пересобрать из текущего source layer:
+
+- migrated skills из `src/content/skills/`
+- still-legacy skills из `.codex-dev/skills/`
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py

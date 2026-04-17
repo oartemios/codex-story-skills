@@ -26,11 +26,11 @@ Legacy reusable source layer находится в:
 
 Он содержит:
 
-- `SKILL.md` как входную точку skill
-- `references/` как слой правил
-- `templates/` как формы результата
-- `_shared/` как общий слой повторяемых элементов
-- `CONVENTIONS.md` как общие правила работы
+- `SKILL.md` как legacy входную точку skill
+- `references/` как legacy слой правил
+- `templates/` как legacy формы результата
+- `_shared/` как legacy общий слой повторяемых элементов
+- `CONVENTIONS.md` как legacy общие правила работы
 
 Первый agent-neutral pilot уже находится в:
 
@@ -46,9 +46,13 @@ src/content/
 - `rfc-adr-assistant`
 
 Для migrated skills source of truth уже находится в `src/content/skills/<skill>/`.
+`fiction-core` bundle уже полностью собран из migrated skills на этом слое.
 Одноименные копии в `.codex-dev/skills/` временно сохраняются как migration fallback
 и parity reference для byte-compatible Codex output. Новые правки migrated skills должны
 идти в `src/content`, после чего generated Codex output сверяется с legacy behavior.
+
+Shared conventions and templates live in `src/content/shared/` and are emitted into Codex output
+for compatibility with the current plugin format.
 
 Текущие product module manifests уже вынесены из Codex-specific дерева и находятся в:
 
@@ -358,6 +362,8 @@ Agent-specific:
 
 ## 9. Migration Plan
 
+Live working checklist and session handoff: `docs/PACKAGING_MIGRATION_PLAN.md`.
+
 1. Зафиксировать текущую Codex сборку как baseline.
 2. Создать `src/content/` и перенести туда reusable content без изменения смысла. Выполнено для shared content, `obsidian-compat` и `rfc-adr-assistant`.
 3. Разделить каждый `SKILL.md` на `skill.yaml` и `prompt.md`. Выполнено для `obsidian-compat` и `rfc-adr-assistant`.
@@ -371,7 +377,7 @@ Agent-specific:
 
 ## 9.1. Legacy Duplicate Removal Order
 
-Legacy duplicates in `.codex-dev/skills/obsidian-compat/` and `.codex-dev/skills/rfc-adr-assistant/` should stay in place until the packaging split is fully stable.
+The last legacy duplicate tree has now been retired; the canonical source for `rfc-adr-assistant` lives in `src/content/skills/rfc-adr-assistant/`.
 
 Safe removal order:
 

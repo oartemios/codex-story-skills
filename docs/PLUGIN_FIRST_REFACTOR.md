@@ -2,7 +2,7 @@
 
 Status: implemented as a minimal coherent refactor. Partially superseded by `docs/PACKAGING.md`.
 
-Current note: product module manifests now live in `src/modules/`, and pilot migrated content lives in `src/content/`. Older notes about `.codex-dev/bundles/` or `.codex-dev/skills/` as the only source describe the first Codex plugin-first refactor state, not the current source layout.
+Current note: product module manifests now live in `src/modules/`, and migrated pilot content lives in `src/content/skills/`. Older notes about `.codex-dev/bundles/` or `.codex-dev/skills/` as the only source describe the first Codex plugin-first refactor state, not the current source layout.
 
 ## 1. Final Folder Structure
 
@@ -37,7 +37,7 @@ codex-story-skills/
     install-package.sh
 ```
 
-Skill source is split during migration: legacy skills remain in `.codex-dev/skills/`, while migrated pilot content lives in `src/content/`. `plugins/` is a local generated output directory and must not commit copied skill trees.
+Skill source is split during migration: unmigrated legacy skills remain in `.codex-dev/skills/`, while migrated pilot content lives in `src/content/skills/`. `plugins/` is a local generated output directory and must not commit copied skill trees.
 
 ## 2. Migration Plan
 
@@ -163,7 +163,7 @@ INSTALL now presents:
 
 - Existing users with raw skills installed under `~/.codex/skills` may keep stale copies until they remove or ignore them.
 - The skill rename from `developers-skills` to `rfc-adr-assistant` changes trigger names and documentation references.
-- Generated plugin bundles duplicate source skills only in local build output and release assets; `.codex-dev/skills/` and `src/content/` are canonical during migration.
+- Generated plugin bundles duplicate source skills only in local build output and release assets; `.codex-dev/skills/` remains canonical for unmigrated skills, and `src/content/skills/` remains canonical for migrated skills.
 - `obsidian-addon` is optional and installable on its own. It adapts to `fiction-core`, `engineering-addon`, or both when those packages are installed, but should not make Obsidian a required runtime or source of truth.
 - `full` can install overlapping skills if users also install individual addons. Prefer either `fiction-core` plus selected addons, or `full`, not both.
 - Release installation depends on uploaded zip assets matching the generated plugin directory names.
