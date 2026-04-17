@@ -369,6 +369,18 @@ Agent-specific:
 9. Добавить Qwen install surface через Claude-compatible package после smoke test.
 10. Обновить README, INSTALL и release docs под отдельные install flows.
 
+## 9.1. Legacy Duplicate Removal Order
+
+Legacy duplicates in `.codex-dev/skills/obsidian-compat/` and `.codex-dev/skills/rfc-adr-assistant/` should stay in place until the packaging split is fully stable.
+
+Safe removal order:
+
+1. Keep `src/content/skills/obsidian-compat/` and `src/content/skills/rfc-adr-assistant/` as the canonical migrated sources.
+2. Keep `src/modules/*.yaml` as the only bundle definitions driving generated output.
+3. Keep byte-compatible plugin output stable for the migrated skills across `validate-skills.py` and `build-plugins.py`.
+4. Move any remaining docs, smoke tests, and install references off the legacy `.codex-dev/skills/*` paths.
+5. Remove the legacy duplicates only after the adapter split and release flow no longer depend on them.
+
 ## 10. Риски и Limits
 
 Риски:
