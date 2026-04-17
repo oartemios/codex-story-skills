@@ -226,6 +226,10 @@ generated/codex/fiction-core/
     project-orchestrator/SKILL.md
 ```
 
+Текущая практическая граница Codex target вынесена в `.codex-dev/scripts/targets/codex.py`.
+Это отдельный adapter слой, который сохраняет существующий CLI и byte-compatible output,
+но делает Codex-specific generation явным местом для следующих target-сплитов.
+
 Правила генерации:
 
 - из `skill.yaml` и `prompt.md` генерируется `SKILL.md`
