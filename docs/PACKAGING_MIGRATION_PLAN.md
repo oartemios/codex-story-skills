@@ -58,6 +58,9 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 - [x] 10-30 min: verify byte-compatible output for that slice and record the result in this file.
 - note: `diff -u .codex-dev/skills/project-bootstrap/SKILL.md plugins/fiction-core/skills/project-bootstrap/SKILL.md` returned no differences.
 - note: `continuity-keeper` is now canonical under `src/content/skills/continuity-keeper/`, `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeds, and the generated `SKILL.md` matches legacy byte-for-byte.
+- note: `writer-assistant` is now canonical under `src/content/skills/writer-assistant/`, `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeds, and the generated `SKILL.md` matches legacy byte-for-byte.
+- note: `story-analyst` is now canonical under `src/content/skills/story-analyst/`, `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeds, and the generated `SKILL.md` matches legacy byte-for-byte.
+- note: `project-orchestrator` is now canonical under `src/content/skills/project-orchestrator/`, `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeds, and the generated `SKILL.md` matches legacy byte-for-byte.
 - [ ] 10-30 min: sweep one documentation surface for stale paths once the migrated slice stays clean.
 - [ ] 10-30 min: reassess whether a separate target adapter is still needed after the `fiction-core` pass.
 

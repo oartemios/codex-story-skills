@@ -1,0 +1,32 @@
+id: writer-assistant
+kind: skill
+title_ru: writer-assistant
+description_ru: Редакторско-архитектурный skill для проектной базы художественного проекта. Используй для работы с каноном, структурой, персонажами, сценпланами, конфликтной матрицей, system.md и разбором архивных материалов без возврата исключенных веток.
+product_area: fiction
+tier: core
+entrypoint: prompt.md
+rules:
+  - rules/STARTER_RULES.md
+  - rules/CANON_RULES.md
+  - rules/SYSTEM_RULES.md
+  - rules/CONFLICT_RULES.md
+  - rules/CHARACTER_RULES.md
+  - rules/STRUCTURE_RULES.md
+  - rules/SCENE_RULES.md
+  - rules/ARCHIVE_RULES.md
+  - rules/TRIGGER_RULES.md
+templates:
+  - templates/current-canon-template.md
+  - templates/system-template.md
+  - templates/conflict-matrix-template.md
+  - templates/character-template.md
+  - templates/outline-template.md
+  - templates/chapter-map-template.md
+  - templates/act-breakdown-template.md
+  - templates/scene-plan-template.md
+capabilities:
+  - writing
+  - project-structure
+  - character-development
+  - story-structure
+codex_trigger_name: writer-assistant
