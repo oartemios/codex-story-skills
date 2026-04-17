@@ -2,6 +2,8 @@
 
 Статус: принято как направление архитектуры. Текущий source layer уже живет в `src/content/`.
 
+Исторические рабочие планы перенесены в [docs/archive/](archive/README.md).
+
 ## 1. Цель
 
 Репозиторий должен иметь один общий source layer для содержимого продукта и отдельные packaging targets для разных coding agents.
@@ -314,7 +316,7 @@ Agent-specific:
 
 ## 9. Migration Plan
 
-Live working checklist and session handoff: `docs/PACKAGING_MIGRATION_PLAN.md`.
+Historical checklist and session handoff: [docs/archive/PACKAGING_MIGRATION_PLAN.md](archive/PACKAGING_MIGRATION_PLAN.md).
 
 1. Зафиксировать текущую Codex сборку как baseline.
 2. Создать `src/content/` и перенести туда reusable content без изменения смысла. Выполнено для shared content, `obsidian-compat` и `rfc-adr-assistant`.
