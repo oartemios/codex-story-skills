@@ -56,8 +56,10 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 - note: `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeded, and `diff -ru` against `.codex-dev/skills/` stayed clean for `project-bootstrap`, `project-orchestrator`, `writer-assistant`, `continuity-keeper`, and `story-analyst`.
 - note: normalizing `prompt.md` / `rules` path references changes generated `SKILL.md`, so keep legacy-style references until the parity policy is explicitly relaxed.
 - note: the source docs now describe the shared layer separately from the legacy Codex-shaped output layer.
-- [ ] Treat the final adapter split as conditional; do not create extra abstraction if `.codex-dev/scripts/targets/codex.py` remains the only Codex-specific surface.
-- [ ] Avoid any build or CLI behavior change until the migration plan explicitly marks parity as stable.
+- [x] Treat the final adapter split as conditional; do not create extra abstraction if `.codex-dev/scripts/targets/codex.py` remains the only Codex-specific surface.
+- note: `.codex-dev/scripts/targets/codex.py` is still the only Codex-specific adapter surface, so no extra split is needed for the current scope.
+- [x] Avoid any build or CLI behavior change until the migration plan explicitly marks parity as stable.
+- note: the current packaging flow remains build-compatible and the plan still treats byte parity as the gating condition.
 
 ## Short Session Steps
 
