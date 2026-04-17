@@ -9,7 +9,6 @@ Each release must publish:
 - `fiction-core.zip`
 - `engineering-addon.zip`
 - `obsidian-addon.zip`
-- `full.zip`
 
 These files are built from `src/modules/*.yaml`, migrated `src/content/`, and any remaining legacy `.codex-dev/skills/` content while the migration is still in flight.
 
@@ -43,7 +42,6 @@ Confirm local assets exist:
 test -f dist/fiction-core.zip
 test -f dist/engineering-addon.zip
 test -f dist/obsidian-addon.zip
-test -f dist/full.zip
 ```
 
 `plugins/` and `dist/` are ignored local build outputs. Do not commit generated plugin bundles or zip assets.

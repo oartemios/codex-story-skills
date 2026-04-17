@@ -68,7 +68,6 @@ jobs:
           test -f dist/fiction-core.zip
           test -f dist/engineering-addon.zip
           test -f dist/obsidian-addon.zip
-          test -f dist/full.zip
 
       - name: Verify raw dev sync package
         env:

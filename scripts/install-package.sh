@@ -21,7 +21,6 @@ Plugins:
   fiction-core        Default fiction-first package
   engineering-addon   Optional RFC/ADR support
   obsidian-addon      Optional Obsidian workspace compatibility
-  full                fiction-core plus optional addons
 
 Presets:
   fiction             fiction-core
@@ -29,11 +28,9 @@ Presets:
   obsidian            obsidian-addon
   obsidian-fiction    fiction-core + obsidian-addon
   obsidian-engineering engineering-addon + obsidian-addon
-  full                full
 
 Examples:
   scripts/install-package.sh
-  scripts/install-package.sh --plugin full --version v1.0.1
   scripts/install-package.sh --plugin engineering-addon --plugin obsidian-addon
   scripts/install-package.sh --preset obsidian-engineering
 EOF
@@ -42,7 +39,7 @@ EOF
 add_plugin() {
   local plugin="$1"
   case "${plugin}" in
-    fiction-core|engineering-addon|obsidian-addon|full)
+    fiction-core|engineering-addon|obsidian-addon)
       ;;
     *)
       echo "Unknown plugin: ${plugin}" >&2
@@ -94,9 +91,6 @@ add_preset() {
     obsidian-engineering)
       add_plugin engineering-addon
       add_plugin obsidian-addon
-      ;;
-    full)
-      add_plugin full
       ;;
     *)
       echo "Unknown preset: $1" >&2

@@ -86,7 +86,6 @@ shared source model
 - public install surfaces остаются раздельными
 - `fiction-core` остается базовым продуктом
 - `engineering-addon` и `obsidian-addon` остаются optional
-- `full` остается convenience package, а не новой базовой моделью продукта
 
 ## 4. Целевая структура
 
@@ -98,7 +97,6 @@ codex-story-skills/
       fiction-core.yaml
       engineering-addon.yaml
       obsidian-addon.yaml
-      full.yaml
     content/
       shared/
         conventions.md
@@ -247,7 +245,6 @@ Release assets:
 dist/codex/fiction-core.zip
 dist/codex/engineering-addon.zip
 dist/codex/obsidian-addon.zip
-dist/codex/full.zip
 ```
 
 ### Claude Code
@@ -267,7 +264,6 @@ Release assets:
 dist/claude/fiction-core.zip
 dist/claude/engineering-addon.zip
 dist/claude/obsidian-addon.zip
-dist/claude/full.zip
 ```
 
 ### Qwen Code
@@ -394,7 +390,6 @@ Safe removal order:
 - миграция `SKILL.md` может случайно изменить trigger behavior
 - Claude Code runtime может не совпасть с Codex skill semantics
 - Qwen Claude-compatible install не гарантирует полную runtime parity
-- `full` может размыть базовую модель, если позиционировать его как основной пакет
 - agent-specific docs могут начать расходиться с shared source semantics
 
 Limits:

@@ -152,7 +152,7 @@
 
 Пишет, обновляет и проверяет инженерные RFC/ADR.
 
-Поставляется в optional plugin `engineering-addon` и в combined plugin `full`.
+Поставляется в optional plugin `engineering-addon`.
 
 Использовать, если нужно:
 
@@ -182,7 +182,7 @@
 
 Помогает сопоставить установленный проектный workflow с Obsidian vault, не делая Obsidian обязательным источником истины.
 
-Поставляется в optional plugin `obsidian-addon` и в combined plugin `full`.
+Поставляется в optional plugin `obsidian-addon`.
 
 Использовать, если нужно:
 

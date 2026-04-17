@@ -46,7 +46,7 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 ## Remaining
 
 - [x] Keep the CLI surface unchanged while validating generated artifacts and release packaging.
-- note: `python3 .codex-dev/scripts/build-plugins.py` and `python3 .codex-dev/scripts/package-release-assets.py` succeed for the full bundle set.
+- note: `python3 .codex-dev/scripts/build-plugins.py` and `python3 .codex-dev/scripts/package-release-assets.py` succeed for the current bundle set.
 - [x] Synchronize docs that still describe the old layout, including packaging, architecture, install, and release references.
 - note: `CONTRIBUTING.md`, `TROUBLESHOOTING.md`, `docs/RELEASE.md`, `docs/ARCHITECTURE.md`, `docs/PACKAGING.md`, and `docs/PLUGIN_FIRST_REFACTOR.md` now describe the current hybrid layout; the remaining historical references are intentional context.
 - [x] Remove legacy duplicates in the safe order only after parity and release flow stability are proven.

@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import sys
 from pathlib import Path
 
+from bundle_sources import PLUGINS_ROOT
 from targets.codex import build_plugin, build_raw_codex_skills, bundle_names
 
 
@@ -28,6 +30,11 @@ def main() -> int:
         return 0
 
     names = args.bundles or bundle_names()
+    if not args.bundles:
+        if PLUGINS_ROOT.exists():
+            for path in sorted(PLUGINS_ROOT.iterdir()):
+                if path.is_dir() and path.name not in names:
+                    shutil.rmtree(path)
     for name in names:
         build_plugin(name)
     return 0
