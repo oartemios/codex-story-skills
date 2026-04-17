@@ -73,7 +73,7 @@ Do not present raw sync as the public install path. Users install built plugin r
 4. Add the skill to the relevant `src/modules/*.yaml` manifest.
 5. Rebuild plugins and validate.
 
-The RFC/ADR skill is named `rfc-adr-assistant`. Do not reintroduce `developers-skills`.
+The RFC/ADR skill is named `rfc-adr-assistant`. Do not reintroduce the old RFC/ADR skill name.
 
 ## Bundle Rules
 

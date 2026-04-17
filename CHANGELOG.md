@@ -27,7 +27,7 @@ All notable changes to this project are documented here.
 
 ### Changed
 
-- Renamed `developers-skills` to `rfc-adr-assistant`.
+- Renamed the RFC/ADR skill to `rfc-adr-assistant`.
 - Moved raw skill sync to `.codex-dev/scripts/sync-to-codex.sh` as an internal development helper.
 - Replaced public install flow with release-asset download and local marketplace registration.
 

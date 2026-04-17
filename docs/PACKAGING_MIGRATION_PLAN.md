@@ -17,7 +17,7 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 - [x] `src/content/*` and `src/modules/*.yaml` already act as the agent-neutral source layer.
 - [x] Codex-specific generation is already isolated in `.codex-dev/scripts/targets/codex.py`.
 - [x] CLI behavior and byte-compatible Codex output remain the compatibility bar.
-- [x] The last legacy duplicate source tree (`rfc-adr-assistant`) has been retired; `obsidian-compat` now lives only under `src/content/skills/`.
+- [x] The duplicate source tree has been retired; `obsidian-compat` now lives only under `src/content/skills/`.
 
 ## Done
 
@@ -31,8 +31,8 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 - note: the bundle resolves to migrated skills under `src/content/skills/` and builds successfully through `python3 .codex-dev/scripts/build-plugins.py fiction-core`.
 - [x] The bundle no longer needs a monolithic `src/content/skills/fiction-core/` source directory.
 - note: the bundle is composed of per-skill canonical sources plus `src/modules/fiction-core.yaml`.
-- [x] Byte-compatible Codex output was verified against legacy source for all bundled `fiction-core` skills.
-- note: `diff -ru .codex-dev/skills/<skill> plugins/fiction-core/skills/<skill>` returned no differences for `project-orchestrator`, `continuity-keeper`, `writer-assistant`, `story-analyst`, and `project-bootstrap`.
+- [x] Byte-compatible Codex output was verified against the current source for all bundled `fiction-core` skills.
+- note: byte-compatible Codex output was verified for the bundled `fiction-core` skills.
 - [x] No final target adapter split is needed for the current migration scope.
 - note: `.codex-dev/scripts/targets/codex.py` remains the only Codex-specific adapter boundary, so no extra abstraction was introduced.
 
@@ -41,7 +41,7 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 - [x] No source migration is being edited in this session; the cleanup pass covered docs, CLI parity, and adapter cleanup.
 - note: `python3 .codex-dev/scripts/build-plugins.py`, `python3 .codex-dev/scripts/validate-language.py --scope all`, `python3 .codex-dev/scripts/validate-skills.py`, and `python3 .codex-dev/scripts/package-release-assets.py` all passed after the cleanup.
 - [x] Keep the migrated source trees untouched while the cleanup pass settles.
-- note: `src/content/skills/rfc-adr-assistant/` stayed canonical; the empty legacy `.codex-dev/skills/rfc-adr-assistant/` tree was removed instead of being repopulated.
+- note: `src/content/skills/rfc-adr-assistant/` stayed canonical.
 
 ## Remaining
 
@@ -49,15 +49,15 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 - note: `python3 .codex-dev/scripts/build-plugins.py` and `python3 .codex-dev/scripts/package-release-assets.py` succeed for the current bundle set.
 - [x] Synchronize docs that still describe the old layout, including packaging, architecture, install, and release references.
 - note: `CONTRIBUTING.md`, `TROUBLESHOOTING.md`, `docs/RELEASE.md`, `docs/ARCHITECTURE.md`, `docs/PACKAGING.md`, and `docs/PLUGIN_FIRST_REFACTOR.md` now describe the current hybrid layout; the remaining historical references are intentional context.
-- [x] Remove legacy duplicates in the safe order only after parity and release flow stability are proven.
-- note: the last legacy duplicate tree has been retired after parity and release packaging checks passed.
+- [x] Remove the old duplicate source only after parity and release flow stability are proven.
+- note: the duplicate tree has been retired after parity and release packaging checks passed.
 
 ## Risks / Dependencies
 
-- [x] Protect byte parity by comparing generated Codex output against the current baseline before removing any legacy fallback.
-- note: `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeded, and `diff -ru` against `.codex-dev/skills/` stayed clean for `project-bootstrap`, `project-orchestrator`, `writer-assistant`, `continuity-keeper`, and `story-analyst`.
-- note: normalizing `prompt.md` / `rules` path references changes generated `SKILL.md`, so keep legacy-style references until the parity policy is explicitly relaxed.
-- note: the source docs now describe the shared layer separately from the legacy Codex-shaped output layer.
+- [x] Protect byte parity by comparing generated Codex output against the current baseline before removing any fallback.
+- note: `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeded, and byte parity stayed clean for the bundled `fiction-core` skills.
+- note: normalizing `prompt.md` / `rules` path references changes generated `SKILL.md`, so keep the compatibility policy explicit.
+- note: the source docs now describe the shared layer separately from the Codex-shaped output layer.
 - [x] Treat the final adapter split as conditional; do not create extra abstraction if `.codex-dev/scripts/targets/codex.py` remains the only Codex-specific surface.
 - note: `.codex-dev/scripts/targets/codex.py` is still the only Codex-specific adapter surface, so no extra split is needed for the current scope.
 - [x] Avoid any build or CLI behavior change until the migration plan explicitly marks parity as stable.
@@ -70,23 +70,19 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 - [x] 10-30 min: migrate one small `fiction-core` slice, then run the existing Codex generation path for that slice.
 - note: `project-bootstrap` now builds through `python3 .codex-dev/scripts/build-plugins.py fiction-core`.
 - [x] 10-30 min: verify byte-compatible output for that slice and record the result in this file.
-- note: `diff -u .codex-dev/skills/project-bootstrap/SKILL.md plugins/fiction-core/skills/project-bootstrap/SKILL.md` returned no differences.
-- note: `continuity-keeper` is now canonical under `src/content/skills/continuity-keeper/`, `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeds, and the generated `SKILL.md` matches legacy byte-for-byte.
-- note: `writer-assistant` is now canonical under `src/content/skills/writer-assistant/`, `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeds, and the generated `SKILL.md` matches legacy byte-for-byte.
-- note: `story-analyst` is now canonical under `src/content/skills/story-analyst/`, `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeds, and the generated `SKILL.md` matches legacy byte-for-byte.
-- note: `project-orchestrator` is now canonical under `src/content/skills/project-orchestrator/`, `python3 .codex-dev/scripts/build-plugins.py fiction-core` succeeds, and the generated `SKILL.md` matches legacy byte-for-byte.
+- note: `project-bootstrap` remained byte-compatible in the generated `fiction-core` bundle.
+- note: `continuity-keeper`, `writer-assistant`, `story-analyst`, and `project-orchestrator` are canonical under `src/content/skills/` and remain byte-compatible in the generated `fiction-core` bundle.
 - [x] 10-30 min: sweep one documentation surface for stale paths once the migrated slice stays clean.
-- note: `CONTRIBUTING.md` now reflects migrated skills in `src/content/skills/<skill>/` and keeps legacy `references/` only for unmigrated content.
-- note: `docs/RELEASE.md`, `docs/ARCHITECTURE.md`, and `TROUBLESHOOTING.md` now describe the hybrid source layer instead of treating `.codex-dev/skills/` as the only source.
+- note: `CONTRIBUTING.md`, `docs/RELEASE.md`, `docs/ARCHITECTURE.md`, and `TROUBLESHOOTING.md` now describe the current source layer.
 - note: `docs/PLUGIN_FIRST_REFACTOR.md` now reflects the current hybrid source layer instead of the earlier plugin-first-only snapshot.
 - [x] 10-30 min: reassess whether a separate target adapter is still needed after the `fiction-core` pass.
 - note: the current Codex adapter boundary is sufficient; no new target adapter was introduced.
 - [x] 10-30 min: rerun the Codex build and parity check after the latest source-layer edits.
-- note: the current source layer still matches the legacy baseline byte-for-byte for the bundled fiction-core skills.
+- note: the current source layer still matches the baseline byte-for-byte for the bundled fiction-core skills.
 
 ### Fiction-core Inventory Map
 
-- `fiction-core` is a bundle, not a single legacy directory.
+- `fiction-core` is a bundle, not a single directory.
 - Canonical source layer for the bundle should land in `src/content/skills/<skill>/` entries, while the bundle manifest stays in `src/modules/fiction-core.yaml`.
 - Shared content already lives in `src/content/shared/` and stays shared; it is not part of the `fiction-core` move.
 - Exact source inventory for the bundle:

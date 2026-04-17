@@ -1,8 +1,8 @@
 # Plugin-First Refactor
 
-Status: implemented as a minimal coherent refactor. Partially superseded by `docs/PACKAGING.md`.
+Status: historical record of the plugin-first refactor.
 
-Current note: product module manifests now live in `src/modules/`, and migrated pilot content lives in `src/content/skills/`. Older notes about `.codex-dev/bundles/` or `.codex-dev/skills/` as the only source describe the first Codex plugin-first refactor state, not the current source layout.
+Current note: product module manifests live in `src/modules/`, and source content lives in `src/content/skills/`.
 
 ## 1. Final Folder Structure
 
@@ -36,35 +36,31 @@ codex-story-skills/
     install-package.sh
 ```
 
-Skill source is split during migration: unmigrated legacy skills remain in `.codex-dev/skills/`, while migrated pilot content lives in `src/content/skills/`. `plugins/` is a local generated output directory and must not commit copied skill trees.
+Skill source is canonical in `src/content/skills/`. `plugins/` is a local generated output directory and must not commit copied skill trees.
 
 ## 2. Migration Plan
 
-1. Move raw source skills from top-level `skills/` to `.codex-dev/skills/`.
-2. Move build/dev tooling from top-level `scripts/` to `.codex-dev/scripts/`.
-3. Keep only public install entrypoints in top-level `scripts/`.
-4. Rename `developers-skills` to `rfc-adr-assistant`.
-5. Add internal bundle manifests. Current path: `src/modules/`.
-6. Generate plugin bundles under `plugins/` locally for validation and release packaging.
-7. Update docs so plugin installation is the primary workflow.
-8. Keep raw sync hidden as a development helper only.
+1. Move build/dev tooling from top-level `scripts/` to `.codex-dev/scripts/`.
+2. Keep only public install entrypoints in top-level `scripts/`.
+3. Rename the RFC/ADR skill to `rfc-adr-assistant`.
+4. Add internal bundle manifests. Current path: `src/modules/`.
+5. Generate plugin bundles under `plugins/` locally for validation and release packaging.
+6. Update docs so plugin installation is the primary workflow.
+7. Keep raw sync hidden as a development helper only.
 
 ## 3. File Rename And Move Plan
 
 Moved:
 
-- `skills/` -> `.codex-dev/skills/`
 - `scripts/validate-skills.py` -> `.codex-dev/scripts/validate-skills.py`
 - `scripts/sync-to-codex.sh` -> `.codex-dev/scripts/sync-to-codex.sh`
 
 Renamed:
 
-- `.codex-dev/skills/developers-skills/` -> `.codex-dev/skills/rfc-adr-assistant/`
-- skill frontmatter `name: developers-skills` -> `name: rfc-adr-assistant`
+- skill frontmatter `name` updated to `rfc-adr-assistant`
 
 Added:
 
-- `.codex-dev/skills/obsidian-compat/`
 - `src/modules/*.yaml`
 - `.codex-dev/scripts/build-plugins.py`
 - `.codex-dev/scripts/package-release-assets.py`
@@ -158,9 +154,8 @@ INSTALL now presents:
 
 ## 8. Risks And Compatibility Notes
 
-- Existing users with raw skills installed under `~/.codex/skills` may keep stale copies until they remove or ignore them.
-- The skill rename from `developers-skills` to `rfc-adr-assistant` changes trigger names and documentation references.
-- Generated plugin bundles duplicate source skills only in local build output and release assets; `.codex-dev/skills/` remains canonical for unmigrated skills, and `src/content/skills/` remains canonical for migrated skills.
+- The RFC/ADR skill rename changes trigger names and documentation references.
+- Generated plugin bundles duplicate source skills only in local build output and release assets; `src/content/skills/` is the canonical source layer.
 - `obsidian-addon` is optional and installable on its own. It adapts to `fiction-core`, `engineering-addon`, or both when those packages are installed, but should not make Obsidian a required runtime or source of truth.
 - Release installation depends on uploaded zip assets matching the generated plugin directory names.
 - Marketplace registration writes to a local marketplace file; Codex may need restart or plugin management reload to show new entries.

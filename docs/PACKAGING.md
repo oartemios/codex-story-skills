@@ -1,6 +1,6 @@
 # Multi-Agent Packaging для coding agents
 
-Статус: принято как направление архитектуры. Полная миграция source layer еще не выполнена.
+Статус: принято как направление архитектуры. Текущий source layer уже живет в `src/content/`.
 
 ## 1. Цель
 
@@ -16,56 +16,12 @@
 
 ## 2. Текущее состояние
 
-Сейчас репозиторий находится в промежуточном состоянии между Codex plugin-first baseline и agent-neutral source model.
+- reusable source живет в `src/content/`
+- product manifests живут в `src/modules/`
+- generated plugin bundles живут в `plugins/`
+- release assets живут в `dist/`
 
-Legacy reusable source layer находится в:
-
-```text
-.codex-dev/skills/
-```
-
-Он содержит:
-
-- `SKILL.md` как legacy входную точку skill
-- `references/` как legacy слой правил
-- `templates/` как legacy формы результата
-- `_shared/` как legacy общий слой повторяемых элементов
-- `CONVENTIONS.md` как legacy общие правила работы
-
-Первый agent-neutral pilot уже находится в:
-
-```text
-src/content/
-```
-
-Туда вынесены:
-
-- shared conventions
-- shared templates
-- `obsidian-compat`
-- `rfc-adr-assistant`
-
-Для migrated skills source of truth уже находится в `src/content/skills/<skill>/`.
-`fiction-core` bundle уже полностью собран из migrated skills на этом слое.
-Одноименные копии в `.codex-dev/skills/` временно сохраняются как migration fallback
-и parity reference для byte-compatible Codex output. Новые правки migrated skills должны
-идти в `src/content`, после чего generated Codex output сверяется с legacy behavior.
-
-Shared conventions and templates live in `src/content/shared/` and are emitted into Codex output
-for compatibility with the current plugin format.
-
-Текущие product module manifests уже вынесены из Codex-specific дерева и находятся в:
-
-```text
-src/modules/
-```
-
-Текущие generated outputs:
-
-- `plugins/` — локальные Codex plugin bundles
-- `dist/` — release zip assets
-
-Проблема текущей структуры: большая часть reusable content еще лежит в Codex-shaped source tree. Для multi-agent packaging этот слой нужно постепенно сделать agent-neutral, а Codex plugin оставить одним из generated targets.
+Shared conventions and templates live in `src/content/shared/` and are emitted into Codex output for compatibility with the current plugin format.
 
 ## 3. Рекомендуемая архитектура
 
@@ -371,33 +327,26 @@ Live working checklist and session handoff: `docs/PACKAGING_MIGRATION_PLAN.md`.
 9. Добавить Qwen install surface через Claude-compatible package после smoke test.
 10. Обновить README, INSTALL и release docs под отдельные install flows.
 
-## 9.1. Порядок удаления legacy-дубликатов
-
-The last legacy duplicate tree has now been retired; the canonical source for `rfc-adr-assistant` lives in `src/content/skills/rfc-adr-assistant/`.
-
-Safe removal order:
+## 9.1. Current invariants
 
 1. Keep `src/content/skills/obsidian-compat/` and `src/content/skills/rfc-adr-assistant/` as the canonical migrated sources.
-2. Keep `src/modules/*.yaml` as the only bundle definitions driving generated output.
+2. Keep `src/modules/*.yaml` as the bundle definitions driving generated output.
 3. Keep byte-compatible plugin output stable for the migrated skills across `validate-skills.py` and `build-plugins.py`.
-4. Move any remaining docs, smoke tests, and install references off the legacy `.codex-dev/skills/*` paths.
-5. Remove the legacy duplicates only after the adapter split and release flow no longer depend on them.
 
-## 10. Риски и Limits
+## 10. Риски и Ограничения
 
 Риски:
 
-- миграция `SKILL.md` может случайно изменить trigger behavior
-- Claude Code runtime может не совпасть с Codex skill semantics
-- Qwen Claude-compatible install не гарантирует полную runtime parity
-- agent-specific docs могут начать расходиться с shared source semantics
+- runtime Claude Code может не совпасть с семантикой Codex skill
+- установка через Claude-compatible package не гарантирует полную runtime parity
+- агентные документы могут начать расходиться с shared source semantics
 
-Limits:
+Ограничения:
 
 - не обещать universal plugin
-- не публиковать один zip для всех агентов
+- не публиковать один zip для всех agents
 - не считать Claude target производным от Codex target
-- не считать Qwen direct support реализованным без отдельного target и smoke test
+- не считать direct Qwen support реализованным без отдельного target и smoke test
 - не делать Obsidian частью base fiction model
 
 Неподдерживаемые assumptions:
