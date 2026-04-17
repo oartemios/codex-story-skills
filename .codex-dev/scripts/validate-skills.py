@@ -7,18 +7,21 @@ import re
 import sys
 from pathlib import Path
 
+from bundle_sources import (
+    DEV_ROOT,
+    CONTENT_ROOT,
+    CONTENT_SHARED_ROOT,
+    CONTENT_SKILLS_ROOT,
+    MODULES_ROOT,
+    PLUGINS_ROOT,
+    REPO_ROOT,
+    SKILLS_ROOT,
+    bundle_manifest_paths,
+    bundle_names,
+    skill_source_exists,
+)
 from bundle_manifest import load_bundle_manifest
 
-
-DEV_ROOT = Path(__file__).resolve().parent.parent
-REPO_ROOT = DEV_ROOT.parent
-SRC_ROOT = REPO_ROOT / "src"
-SKILLS_ROOT = DEV_ROOT / "skills"
-MODULES_ROOT = SRC_ROOT / "modules"
-CONTENT_ROOT = SRC_ROOT / "content"
-CONTENT_SKILLS_ROOT = CONTENT_ROOT / "skills"
-CONTENT_SHARED_ROOT = CONTENT_ROOT / "shared"
-PLUGINS_ROOT = REPO_ROOT / "plugins"
 
 BACKTICK_MD_RE = re.compile(r"`([^`]+\.md)`")
 MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
@@ -55,12 +58,6 @@ def iter_content_skill_dirs() -> list[Path]:
         for path in CONTENT_SKILLS_ROOT.iterdir()
         if path.is_dir() and not path.name.startswith(".")
     )
-
-
-def skill_source_exists(skill: str) -> bool:
-    return (SKILLS_ROOT / skill / "SKILL.md").exists() or (
-        CONTENT_SKILLS_ROOT / skill / "skill.yaml"
-    ).exists()
 
 
 def resolve_md_reference(source: Path, ref: str) -> Path | None:
@@ -312,12 +309,12 @@ def validate_bundle_manifests(errors: list[str]) -> None:
         errors.append("src/modules: missing module manifests directory")
         return
 
-    manifests = sorted(MODULES_ROOT.glob("*.yaml"))
+    manifests = bundle_manifest_paths()
     if not manifests:
         errors.append("src/modules: no module manifests found")
         return
 
-    bundle_names = {path.stem for path in manifests}
+    bundle_names_set = set(bundle_names())
     bundle_data: dict[str, dict] = {}
     for manifest in manifests:
         data = yaml_load(manifest, errors)
@@ -342,7 +339,7 @@ def validate_bundle_manifests(errors: list[str]) -> None:
                 )
 
         for included in includes:
-            if included not in bundle_names:
+            if included not in bundle_names_set:
                 errors.append(
                     f"{manifest.relative_to(REPO_ROOT)}: unknown included bundle '{included}'"
                 )

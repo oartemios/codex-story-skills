@@ -6,56 +6,24 @@ import json
 import shutil
 from pathlib import Path
 
+from bundle_sources import (
+    CONTENT_SHARED_ROOT,
+    CONTENT_SKILLS_ROOT,
+    PLUGINS_ROOT,
+    REPO_ROOT,
+    SKILLS_ROOT,
+    all_skill_names,
+    bundle_names,
+    load_bundle,
+    resolve_bundle_skills,
+)
 from bundle_manifest import load_bundle_manifest
-
-
-SCRIPTS_ROOT = Path(__file__).resolve().parents[1]
-DEV_ROOT = SCRIPTS_ROOT.parent
-REPO_ROOT = DEV_ROOT.parent
-SRC_ROOT = REPO_ROOT / "src"
-SKILLS_ROOT = DEV_ROOT / "skills"
-MODULES_ROOT = SRC_ROOT / "modules"
-CONTENT_ROOT = SRC_ROOT / "content"
-CONTENT_SKILLS_ROOT = CONTENT_ROOT / "skills"
-CONTENT_SHARED_ROOT = CONTENT_ROOT / "shared"
-PLUGINS_ROOT = REPO_ROOT / "plugins"
 VERSION = "1.0.1"
 
 AUTHOR = {
     "name": "Artem Orlov",
     "url": "https://github.com/oartemios",
 }
-
-
-def load_bundle(name: str) -> dict:
-    path = MODULES_ROOT / f"{name}.yaml"
-    if not path.exists():
-        raise ValueError(f"Bundle manifest not found: {path.relative_to(REPO_ROOT)}")
-    return load_bundle_manifest(path)
-
-
-def resolve_bundle_skills(name: str, seen: set[str] | None = None) -> tuple[list[str], bool]:
-    seen = seen or set()
-    if name in seen:
-        raise ValueError(f"Bundle include cycle detected at {name}")
-    seen.add(name)
-
-    bundle = load_bundle(name)
-    skills: list[str] = []
-    include_shared = bool(bundle.get("include_shared", False))
-
-    for included in bundle.get("includes", []):
-        included_skills, included_shared = resolve_bundle_skills(included, seen.copy())
-        include_shared = include_shared or included_shared
-        for skill in included_skills:
-            if skill not in skills:
-                skills.append(skill)
-
-    for skill in bundle.get("skills", []):
-        if skill not in skills:
-            skills.append(skill)
-
-    return skills, include_shared
 
 
 def copy_tree(source: Path, dest: Path) -> None:
@@ -218,25 +186,6 @@ def build_plugin(name: str) -> None:
     )
     write_plugin_readme(plugin_dir, bundle, skills)
     print(f"Built {plugin_dir.relative_to(REPO_ROOT)}")
-
-
-def bundle_names() -> list[str]:
-    return sorted(path.stem for path in MODULES_ROOT.glob("*.yaml"))
-
-
-def all_skill_names() -> list[str]:
-    names = {
-        path.name
-        for path in SKILLS_ROOT.iterdir()
-        if path.is_dir() and not path.name.startswith(".") and path.name != "_shared"
-    }
-    if CONTENT_SKILLS_ROOT.exists():
-        names.update(
-            path.name
-            for path in CONTENT_SKILLS_ROOT.iterdir()
-            if path.is_dir() and not path.name.startswith(".")
-        )
-    return sorted(names)
 
 
 def build_raw_codex_skills(dest: Path) -> None:
