@@ -6,8 +6,8 @@ For repository layout and build architecture, see `docs/ARCHITECTURE.md`.
 
 ## Source Of Truth
 
-- Legacy atomic source skills live in `.codex-dev/skills/`.
-- Migrated agent-neutral skill content lives in `src/content/`.
+- Legacy atomic source skills live in `.codex-dev/skills/` until they are migrated.
+- Migrated agent-neutral skill content lives in `src/content/skills/`.
 - Product module manifests live in `src/modules/`.
 - Build, validation, packaging, and raw dev sync tooling lives in `.codex-dev/scripts/`.
 - Generated installable plugins are built into `plugins/` locally.
@@ -70,7 +70,7 @@ Do not present raw sync as the public install path. Users install built plugin r
 1. Add or update the atomic skill under `src/content/skills/<skill-name>/` for new migrated content, or `.codex-dev/skills/<skill-name>/` for legacy content.
 2. For migrated content, keep `skill.yaml` valid with `id`, `description_ru`, and `entrypoint`.
 3. For legacy content, keep `SKILL.md` frontmatter valid with `name` and `description`.
-4. Put migrated rules in `rules/`; put legacy reusable rules in `references/`; keep templates in `templates/`.
+4. Put migrated rules in `rules/`; keep legacy reusable rules in `references/`; keep templates in `templates/`.
 5. Add the skill to the relevant `src/modules/*.yaml` manifest.
 6. Rebuild plugins and validate.
 
