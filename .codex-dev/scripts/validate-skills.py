@@ -318,10 +318,12 @@ def validate_bundle_manifests(errors: list[str]) -> None:
         return
 
     bundle_names = {path.stem for path in manifests}
+    bundle_data: dict[str, dict] = {}
     for manifest in manifests:
         data = yaml_load(manifest, errors)
         if data is None:
             continue
+        bundle_data[manifest.stem] = data
         for field in ("name", "description"):
             if not data.get(field):
                 errors.append(f"{manifest.relative_to(REPO_ROOT)}: missing '{field}'")
@@ -329,16 +331,99 @@ def validate_bundle_manifests(errors: list[str]) -> None:
             errors.append(
                 f"{manifest.relative_to(REPO_ROOT)}: name must match file stem"
             )
-        for skill in data.get("skills", []):
+
+        skills = validate_bundle_list_field(manifest, data, "skills", errors)
+        includes = validate_bundle_list_field(manifest, data, "includes", errors)
+
+        for skill in skills:
             if not skill_source_exists(skill):
                 errors.append(
                     f"{manifest.relative_to(REPO_ROOT)}: unknown skill '{skill}'"
                 )
-        for included in data.get("includes", []):
+
+        for included in includes:
             if included not in bundle_names:
                 errors.append(
                     f"{manifest.relative_to(REPO_ROOT)}: unknown included bundle '{included}'"
                 )
+
+    validate_bundle_include_cycles(manifests, bundle_data, errors)
+
+
+def validate_bundle_list_field(
+    manifest_path: Path,
+    data: dict,
+    field: str,
+    errors: list[str],
+) -> list[str]:
+    rel_manifest = manifest_path.relative_to(REPO_ROOT)
+    value = data.get(field)
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        errors.append(f"{rel_manifest}: '{field}' must be a list")
+        return []
+
+    items: list[str] = []
+    seen: dict[str, int] = {}
+    for index, item in enumerate(value, start=1):
+        if not isinstance(item, str):
+            errors.append(f"{rel_manifest}: '{field}' item #{index} must be a string")
+            continue
+        if not item:
+            errors.append(f"{rel_manifest}: '{field}' item #{index} must not be empty")
+            continue
+        if item in seen:
+            errors.append(
+                f"{rel_manifest}: duplicate '{field}' entry '{item}' "
+                f"(items {seen[item]} and {index})"
+            )
+        else:
+            seen[item] = index
+        items.append(item)
+    return items
+
+
+def validate_bundle_include_cycles(
+    manifests: list[Path],
+    bundle_data: dict[str, dict],
+    errors: list[str],
+) -> None:
+    visiting: set[str] = set()
+    visited: set[str] = set()
+    reported: set[tuple[str, ...]] = set()
+
+    def report_cycle(path: list[str]) -> None:
+        cycle = path[path.index(path[-1]) :]
+        signature = tuple(cycle)
+        if signature in reported:
+            return
+        reported.add(signature)
+        cycle_text = " -> ".join(cycle)
+        errors.append(f"src/modules/{path[-1]}.yaml: include cycle detected: {cycle_text}")
+
+    def visit(name: str, path: list[str]) -> None:
+        if name in visiting:
+            report_cycle(path + [name])
+            return
+        if name in visited:
+            return
+
+        visiting.add(name)
+        path.append(name)
+        data = bundle_data.get(name)
+        if isinstance(data, dict):
+            includes = data.get("includes")
+            if isinstance(includes, list):
+                for included in includes:
+                    if isinstance(included, str) and included in bundle_data:
+                        visit(included, path)
+        path.pop()
+        visiting.remove(name)
+        visited.add(name)
+
+    for manifest in manifests:
+        visit(manifest.stem, [])
 
 
 def yaml_load(path: Path, errors: list[str]) -> dict | None:
