@@ -38,8 +38,10 @@ Update it in place as work lands. Do not rewrite history; only tick items, add s
 
 ## In Progress
 
-- [ ] No source migration is being edited in this session; the next implementation pass should focus on docs, CLI parity, and adapter cleanup.
-- [ ] Keep the migrated source trees untouched while the cleanup pass settles.
+- [x] No source migration is being edited in this session; the cleanup pass covered docs, CLI parity, and adapter cleanup.
+- note: `python3 .codex-dev/scripts/build-plugins.py`, `python3 .codex-dev/scripts/validate-language.py --scope all`, `python3 .codex-dev/scripts/validate-skills.py`, and `python3 .codex-dev/scripts/package-release-assets.py` all passed after the cleanup.
+- [x] Keep the migrated source trees untouched while the cleanup pass settles.
+- note: `src/content/skills/rfc-adr-assistant/` stayed canonical; the empty legacy `.codex-dev/skills/rfc-adr-assistant/` tree was removed instead of being repopulated.
 
 ## Remaining
 

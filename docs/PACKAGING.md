@@ -375,7 +375,7 @@ Live working checklist and session handoff: `docs/PACKAGING_MIGRATION_PLAN.md`.
 9. Добавить Qwen install surface через Claude-compatible package после smoke test.
 10. Обновить README, INSTALL и release docs под отдельные install flows.
 
-## 9.1. Legacy Duplicate Removal Order
+## 9.1. Порядок удаления legacy-дубликатов
 
 The last legacy duplicate tree has now been retired; the canonical source for `rfc-adr-assistant` lives in `src/content/skills/rfc-adr-assistant/`.
 

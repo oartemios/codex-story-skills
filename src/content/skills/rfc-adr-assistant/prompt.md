@@ -65,7 +65,7 @@
 
 Использовать дополнительные модули из:
 
-`skills/rfc-adr-assistant/references/`
+`rules/`
 
 - `TRIGGER_RULES.md`
 - `RFC_RULES.md`
@@ -82,8 +82,8 @@
 
 Если пользователь просит создать документ, использовать шаблон:
 
-- `skills/rfc-adr-assistant/templates/rfc-template.md` для RFC/proposal/design doc
-- `skills/rfc-adr-assistant/templates/adr-template.md` для ADR/decision record
+- `templates/rfc-template.md` для RFC/proposal/design doc
+- `templates/adr-template.md` для ADR/decision record
 
 Если пользователь просит только анализ, не создавать документ без необходимости. Дать review с:
 
