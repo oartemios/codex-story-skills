@@ -81,6 +81,10 @@ def resolve_md_reference(source: Path, ref: str) -> Path | None:
             return content_ref
         return DEV_ROOT / ref
     if ref.startswith("templates/"):
+        if CONTENT_SKILLS_ROOT in source.parents:
+            for parent in source.parents:
+                if parent.parent == CONTENT_SKILLS_ROOT:
+                    return parent / ref
         for parent in source.parents:
             if (parent / "SKILL.md").exists():
                 return parent / ref

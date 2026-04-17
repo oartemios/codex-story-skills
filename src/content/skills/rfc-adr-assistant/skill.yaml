@@ -1,0 +1,19 @@
+id: rfc-adr-assistant
+kind: skill
+title_ru: rfc-adr-assistant
+description_ru: Skill для инженерных RFC и ADR. Используй, когда нужно написать, обновить или проверить техническое решение, архитектурную запись, proposal, design doc, decision record, альтернативы, последствия, rollout или open questions.
+product_area: engineering
+tier: optional
+entrypoint: prompt.md
+rules:
+  - rules/TRIGGER_RULES.md
+  - rules/RFC_RULES.md
+  - rules/ADR_RULES.md
+templates:
+  - templates/rfc-template.md
+  - templates/adr-template.md
+capabilities:
+  - engineering-docs
+  - architecture
+  - decision-records
+codex_trigger_name: rfc-adr-assistant
