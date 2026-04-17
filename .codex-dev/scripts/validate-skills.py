@@ -150,12 +150,9 @@ def validate_frontmatter(skill_md: Path, errors: list[str]) -> None:
 
 def validate_content_skill(skill_dir: Path, errors: list[str]) -> None:
     manifest_path = skill_dir / "skill.yaml"
-    prompt_path = skill_dir / "prompt.md"
     if not manifest_path.exists():
         errors.append(f"{skill_dir.relative_to(REPO_ROOT)}: missing skill.yaml")
         return
-    if not prompt_path.exists():
-        errors.append(f"{skill_dir.relative_to(REPO_ROOT)}: missing prompt.md")
 
     data = yaml_load(manifest_path, errors)
     if data is None:
@@ -167,9 +164,127 @@ def validate_content_skill(skill_dir: Path, errors: list[str]) -> None:
     for field in ("kind", "description_ru", "entrypoint"):
         if not data.get(field):
             errors.append(f"{manifest_path.relative_to(REPO_ROOT)}: missing '{field}'")
+    if data.get("kind") and data.get("kind") != "skill":
+        errors.append(f"{manifest_path.relative_to(REPO_ROOT)}: kind must be 'skill'")
+
+    entrypoint = data.get("entrypoint")
+    if isinstance(entrypoint, str):
+        validate_content_manifest_path(
+            manifest_path,
+            skill_dir,
+            entrypoint,
+            "entrypoint",
+            errors,
+            expected_prefix=None,
+        )
+    elif entrypoint is not None:
+        errors.append(f"{manifest_path.relative_to(REPO_ROOT)}: entrypoint must be a string")
+
+    validate_content_manifest_file_list(
+        manifest_path,
+        skill_dir,
+        data,
+        "rules",
+        errors,
+        required=True,
+        expected_prefix="rules/",
+    )
+    validate_content_manifest_file_list(
+        manifest_path,
+        skill_dir,
+        data,
+        "templates",
+        errors,
+        required=False,
+        expected_prefix="templates/",
+    )
+    validate_content_manifest_file_list(
+        manifest_path,
+        CONTENT_ROOT,
+        data,
+        "shared",
+        errors,
+        required=False,
+        expected_prefix="shared/",
+    )
+
     rules_dir = skill_dir / "rules"
     if not rules_dir.exists():
         errors.append(f"{skill_dir.relative_to(REPO_ROOT)}: missing rules/")
+
+
+def validate_content_manifest_path(
+    manifest_path: Path,
+    base_dir: Path,
+    value: str,
+    field: str,
+    errors: list[str],
+    expected_prefix: str | None,
+) -> None:
+    rel_manifest = manifest_path.relative_to(REPO_ROOT)
+    if not value:
+        errors.append(f"{rel_manifest}: {field} contains an empty path")
+        return
+    if value.startswith("/"):
+        errors.append(f"{rel_manifest}: {field} path must be relative: '{value}'")
+        return
+    path = Path(value)
+    if ".." in path.parts:
+        errors.append(f"{rel_manifest}: {field} path must not traverse upward: '{value}'")
+        return
+    if expected_prefix is not None and not value.startswith(expected_prefix):
+        errors.append(
+            f"{rel_manifest}: {field} path must start with '{expected_prefix}': '{value}'"
+        )
+        return
+    resolved = base_dir / path
+    if not resolved.exists():
+        errors.append(f"{rel_manifest}: {field} path not found: '{value}'")
+        return
+    if not resolved.is_file():
+        errors.append(f"{rel_manifest}: {field} path is not a file: '{value}'")
+
+
+def validate_content_manifest_file_list(
+    manifest_path: Path,
+    base_dir: Path,
+    data: dict,
+    field: str,
+    errors: list[str],
+    required: bool,
+    expected_prefix: str,
+) -> None:
+    rel_manifest = manifest_path.relative_to(REPO_ROOT)
+    if field not in data:
+        if required:
+            errors.append(f"{rel_manifest}: missing '{field}'")
+        return
+
+    values = data.get(field)
+    if not isinstance(values, list):
+        errors.append(f"{rel_manifest}: '{field}' must be a list")
+        return
+    if required and not values:
+        errors.append(f"{rel_manifest}: '{field}' must not be empty")
+        return
+
+    seen: set[str] = set()
+    for value in values:
+        if not isinstance(value, str):
+            errors.append(f"{rel_manifest}: '{field}' entries must be strings")
+            continue
+        if value in seen:
+            errors.append(f"{rel_manifest}: duplicate '{field}' entry '{value}'")
+            continue
+        seen.add(value)
+        validate_content_manifest_path(
+            manifest_path,
+            base_dir,
+            value,
+            field,
+            errors,
+            expected_prefix=expected_prefix,
+        )
 
 
 def validate_markdown_references(md_file: Path, errors: list[str]) -> None:

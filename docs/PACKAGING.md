@@ -43,6 +43,12 @@ src/content/
 - shared conventions
 - shared templates
 - `obsidian-compat`
+- `rfc-adr-assistant`
+
+Для migrated skills source of truth уже находится в `src/content/skills/<skill>/`.
+Одноименные копии в `.codex-dev/skills/` временно сохраняются как migration fallback
+и parity reference для byte-compatible Codex output. Новые правки migrated skills должны
+идти в `src/content`, после чего generated Codex output сверяется с legacy behavior.
 
 Текущие product module manifests уже вынесены из Codex-specific дерева и находятся в:
 
@@ -349,14 +355,15 @@ Agent-specific:
 ## 9. Migration Plan
 
 1. Зафиксировать текущую Codex сборку как baseline.
-2. Создать `src/content/` и перенести туда reusable content без изменения смысла. Выполнено для shared content и `obsidian-compat`.
-3. Разделить каждый `SKILL.md` на `skill.yaml` и `prompt.md`. Выполнено для `obsidian-compat`.
-4. Переименовать `references/` в `rules/` во внутреннем source layer. Выполнено для `obsidian-compat`.
+2. Создать `src/content/` и перенести туда reusable content без изменения смысла. Выполнено для shared content, `obsidian-compat` и `rfc-adr-assistant`.
+3. Разделить каждый `SKILL.md` на `skill.yaml` и `prompt.md`. Выполнено для `obsidian-compat` и `rfc-adr-assistant`.
+4. Переименовать `references/` в `rules/` во внутреннем source layer. Выполнено для `obsidian-compat` и `rfc-adr-assistant`.
 5. Написать Codex adapter, который генерирует текущий Codex output. Выполнено для migrated pilot content.
-6. Переключить release workflow Codex на `targets/codex`.
-7. Добавить Claude target как отдельный adapter из того же source.
-8. Добавить Qwen install surface через Claude-compatible package после smoke test.
-9. Обновить README, INSTALL и release docs под отдельные install flows.
+6. Усилить validation для migrated `skill.yaml`: проверять `entrypoint`, перечисленные `rules`, `templates` и optional `shared` paths. Выполнено для текущего pilot set.
+7. Переключить release workflow Codex на `targets/codex`.
+8. Добавить Claude target как отдельный adapter из того же source.
+9. Добавить Qwen install surface через Claude-compatible package после smoke test.
+10. Обновить README, INSTALL и release docs под отдельные install flows.
 
 ## 10. Риски и Limits
 
