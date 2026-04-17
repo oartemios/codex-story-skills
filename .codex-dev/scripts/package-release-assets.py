@@ -7,6 +7,8 @@ import argparse
 import shutil
 from pathlib import Path
 
+from bundle_sources import bundle_names
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PLUGINS_ROOT = REPO_ROOT / "plugins"
@@ -28,9 +30,11 @@ def main() -> int:
     args = parser.parse_args()
 
     dist_root = Path(args.dist).expanduser().resolve()
+    if not args.plugins and dist_root.exists():
+        shutil.rmtree(dist_root)
     dist_root.mkdir(parents=True, exist_ok=True)
 
-    names = args.plugins or sorted(path.name for path in PLUGINS_ROOT.iterdir() if path.is_dir())
+    names = args.plugins or bundle_names()
     for name in names:
         package_plugin(PLUGINS_ROOT / name, dist_root)
     return 0

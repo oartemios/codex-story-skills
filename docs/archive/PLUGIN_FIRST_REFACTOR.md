@@ -1,6 +1,8 @@
 # Plugin-First Refactor
 
-Status: implemented as a minimal coherent refactor.
+Status: historical record of the plugin-first refactor.
+
+Current note: product module manifests live in `src/modules/`, and source content lives in `src/content/skills/`.
 
 ## 1. Final Folder Structure
 
@@ -8,20 +10,12 @@ Status: implemented as a minimal coherent refactor.
 codex-story-skills/
   .codex-dev/
     skills/
-      _shared/
-      CONVENTIONS.md
       continuity-keeper/
-      obsidian-compat/
       project-bootstrap/
       project-orchestrator/
       rfc-adr-assistant/
       story-analyst/
       writer-assistant/
-    bundles/
-      engineering-addon.yaml
-      fiction-core.yaml
-      full.yaml
-      obsidian-addon.yaml
     scripts/
       build-plugins.py
       package-release-assets.py
@@ -29,40 +23,45 @@ codex-story-skills/
       validate-skills.py
   plugins/
     .gitkeep        # generated plugin bundles appear here locally, ignored by git
+  src/
+    content/
+      shared/
+      skills/
+        obsidian-compat/
+    modules/
+      engineering-addon.yaml
+      fiction-core.yaml
+      obsidian-addon.yaml
   scripts/
     install-package.sh
 ```
 
-`.codex-dev/skills/` is the only source of truth for skill source. `plugins/` is a local generated output directory and must not commit copied skill trees.
+Skill source is canonical in `src/content/skills/`. `plugins/` is a local generated output directory and must not commit copied skill trees.
 
 ## 2. Migration Plan
 
-1. Move raw source skills from top-level `skills/` to `.codex-dev/skills/`.
-2. Move build/dev tooling from top-level `scripts/` to `.codex-dev/scripts/`.
-3. Keep only public install entrypoints in top-level `scripts/`.
-4. Rename `developers-skills` to `rfc-adr-assistant`.
-5. Add internal bundle manifests under `.codex-dev/bundles/`.
-6. Generate plugin bundles under `plugins/` locally for validation and release packaging.
-7. Update docs so plugin installation is the primary workflow.
-8. Keep raw sync hidden as a development helper only.
+1. Move build/dev tooling from top-level `scripts/` to `.codex-dev/scripts/`.
+2. Keep only public install entrypoints in top-level `scripts/`.
+3. Rename the RFC/ADR skill to `rfc-adr-assistant`.
+4. Add internal bundle manifests. Current path: `src/modules/`.
+5. Generate plugin bundles under `plugins/` locally for validation and release packaging.
+6. Update docs so plugin installation is the primary workflow.
+7. Keep raw sync hidden as a development helper only.
 
 ## 3. File Rename And Move Plan
 
 Moved:
 
-- `skills/` -> `.codex-dev/skills/`
 - `scripts/validate-skills.py` -> `.codex-dev/scripts/validate-skills.py`
 - `scripts/sync-to-codex.sh` -> `.codex-dev/scripts/sync-to-codex.sh`
 
 Renamed:
 
-- `.codex-dev/skills/developers-skills/` -> `.codex-dev/skills/rfc-adr-assistant/`
-- skill frontmatter `name: developers-skills` -> `name: rfc-adr-assistant`
+- skill frontmatter `name` updated to `rfc-adr-assistant`
 
 Added:
 
-- `.codex-dev/skills/obsidian-compat/`
-- `.codex-dev/bundles/*.yaml`
+- `src/modules/*.yaml`
 - `.codex-dev/scripts/build-plugins.py`
 - `.codex-dev/scripts/package-release-assets.py`
 - `plugins/.gitkeep`
@@ -70,14 +69,13 @@ Added:
 
 ## 4. Plugin Build Strategy
 
-The build script reads `.codex-dev/bundles/*.yaml` and copies selected source skills into `plugins/<bundle>/skills/` locally. `plugins/*` is ignored so generated skill copies are not stored in the repository.
+The build script reads `src/modules/*.yaml` and copies selected source skills into `plugins/<bundle>/skills/` locally. `plugins/*` is ignored so generated skill copies are not stored in the repository.
 
 Bundle model:
 
 - `fiction-core`: default fiction package
 - `engineering-addon`: optional `rfc-adr-assistant`
 - `obsidian-addon`: optional `obsidian-compat`, independent from domain packages
-- `full`: includes all current bundles
 
 Generated plugins include `.codex-plugin/plugin.json` and a generated `README.md`. They should not be edited manually or committed.
 
@@ -101,7 +99,6 @@ Release assets are zip files made from generated plugin directories:
 - `fiction-core.zip`
 - `engineering-addon.zip`
 - `obsidian-addon.zip`
-- `full.zip`
 
 Package command:
 
@@ -157,10 +154,8 @@ INSTALL now presents:
 
 ## 8. Risks And Compatibility Notes
 
-- Existing users with raw skills installed under `~/.codex/skills` may keep stale copies until they remove or ignore them.
-- The skill rename from `developers-skills` to `rfc-adr-assistant` changes trigger names and documentation references.
-- Generated plugin bundles duplicate source skills only in local build output and release assets; `.codex-dev/skills/` remains canonical in git.
+- The RFC/ADR skill rename changes trigger names and documentation references.
+- Generated plugin bundles duplicate source skills only in local build output and release assets; `src/content/skills/` is the canonical source layer.
 - `obsidian-addon` is optional and installable on its own. It adapts to `fiction-core`, `engineering-addon`, or both when those packages are installed, but should not make Obsidian a required runtime or source of truth.
-- `full` can install overlapping skills if users also install individual addons. Prefer either `fiction-core` plus selected addons, or `full`, not both.
 - Release installation depends on uploaded zip assets matching the generated plugin directory names.
 - Marketplace registration writes to a local marketplace file; Codex may need restart or plugin management reload to show new entries.

@@ -1,0 +1,18 @@
+id: continuity-keeper
+kind: skill
+title_ru: continuity-keeper
+description_ru: Skill для контроля непрерывности канона во времени. Используй для сравнения версий, фиксации изменений, поиска сломанных связей и оценки последствий после правок или серии решений.
+product_area: fiction
+tier: core
+entrypoint: prompt.md
+rules:
+  - rules/TRIGGER_RULES.md
+  - rules/CHANGE_RULES.md
+  - rules/DEPENDENCY_RULES.md
+templates:
+  - templates/continuity-report-template.md
+capabilities:
+  - writing
+  - project-structure
+  - continuity-analysis
+codex_trigger_name: continuity-keeper

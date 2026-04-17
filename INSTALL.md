@@ -22,7 +22,6 @@ less /tmp/codex-story-skills-install.sh
 ```bash
 bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v1.0.1
 bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v1.0.1
-bash /tmp/codex-story-skills-install.sh --plugin full --version v1.0.1
 ```
 
 `obsidian-addon` устанавливается как самостоятельный пакет и может использоваться вместе с `fiction-core`, `engineering-addon` или обоими пакетами.
@@ -51,14 +50,12 @@ bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version 
 - `obsidian`: `obsidian-addon`
 - `obsidian-fiction`: `fiction-core` + `obsidian-addon`
 - `obsidian-engineering`: `engineering-addon` + `obsidian-addon`
-- `full`: `full`
 
 Доступные plugin assets:
 
 - `fiction-core.zip`
 - `engineering-addon.zip`
 - `obsidian-addon.zip`
-- `full.zip`
 
 ## Что делает Installer
 

@@ -47,7 +47,6 @@ jobs:
           test -f dist/fiction-core.zip
           test -f dist/engineering-addon.zip
           test -f dist/obsidian-addon.zip
-          test -f dist/full.zip
 
       - name: Verify independent Obsidian addon contents
         run: |
@@ -74,4 +73,3 @@ jobs:
             dist/fiction-core.zip
             dist/engineering-addon.zip
             dist/obsidian-addon.zip
-            dist/full.zip

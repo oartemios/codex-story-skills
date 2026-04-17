@@ -7,14 +7,19 @@ import re
 import sys
 from pathlib import Path
 
+from bundle_sources import (
+    CONTENT_ROOT,
+    CONTENT_SHARED_ROOT,
+    CONTENT_SKILLS_ROOT,
+    MODULES_ROOT,
+    PLUGINS_ROOT,
+    REPO_ROOT,
+    bundle_manifest_paths,
+    bundle_names,
+    skill_source_exists,
+)
 from bundle_manifest import load_bundle_manifest
 
-
-DEV_ROOT = Path(__file__).resolve().parent.parent
-REPO_ROOT = DEV_ROOT.parent
-SKILLS_ROOT = DEV_ROOT / "skills"
-BUNDLES_ROOT = DEV_ROOT / "bundles"
-PLUGINS_ROOT = REPO_ROOT / "plugins"
 
 BACKTICK_MD_RE = re.compile(r"`([^`]+\.md)`")
 MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
@@ -36,10 +41,12 @@ TOP_LEVEL_REFERENCE_DOCS = TOP_LEVEL_DOCS + ("ROADMAP.md",)
 
 
 def iter_skill_dirs() -> list[Path]:
+    if not CONTENT_SKILLS_ROOT.exists():
+        return []
     return sorted(
         path
-        for path in SKILLS_ROOT.iterdir()
-        if path.is_dir() and not path.name.startswith(".") and path.name != "_shared"
+        for path in CONTENT_SKILLS_ROOT.iterdir()
+        if path.is_dir() and not path.name.startswith(".")
     )
 
 
@@ -47,12 +54,20 @@ def resolve_md_reference(source: Path, ref: str) -> Path | None:
     if source.parent == REPO_ROOT and "/" not in ref and ref in TOP_LEVEL_REFERENCE_DOCS:
         return REPO_ROOT / ref
     if ref.startswith("skills/"):
-        if PLUGINS_ROOT in source.parents:
-            for parent in source.parents:
-                if parent.parent == PLUGINS_ROOT:
-                    return parent / ref
-        return DEV_ROOT / ref
+        if ref == "skills/CONVENTIONS.md":
+            content_ref = CONTENT_SHARED_ROOT / "conventions.md"
+        elif ref.startswith("skills/_shared/"):
+            content_ref = CONTENT_SHARED_ROOT / ref.removeprefix("skills/_shared/")
+        else:
+            content_ref = CONTENT_ROOT / ref.removeprefix("skills/")
+        if content_ref.exists():
+            return content_ref
+        return None
     if ref.startswith("templates/"):
+        if CONTENT_SKILLS_ROOT in source.parents:
+            for parent in source.parents:
+                if parent.parent == CONTENT_SKILLS_ROOT:
+                    return parent / ref
         for parent in source.parents:
             if (parent / "SKILL.md").exists():
                 return parent / ref
@@ -116,6 +131,145 @@ def validate_frontmatter(skill_md: Path, errors: list[str]) -> None:
         errors.append(f"{skill_md}: frontmatter must contain 'description'")
 
 
+def validate_content_skill(skill_dir: Path, errors: list[str]) -> None:
+    manifest_path = skill_dir / "skill.yaml"
+    if not manifest_path.exists():
+        errors.append(f"{skill_dir.relative_to(REPO_ROOT)}: missing skill.yaml")
+        return
+
+    data = yaml_load(manifest_path, errors)
+    if data is None:
+        return
+    if data.get("id") != skill_dir.name:
+        errors.append(
+            f"{manifest_path.relative_to(REPO_ROOT)}: id must match skill directory"
+        )
+    for field in ("kind", "description_ru", "entrypoint"):
+        if not data.get(field):
+            errors.append(f"{manifest_path.relative_to(REPO_ROOT)}: missing '{field}'")
+    if data.get("kind") and data.get("kind") != "skill":
+        errors.append(f"{manifest_path.relative_to(REPO_ROOT)}: kind must be 'skill'")
+
+    entrypoint = data.get("entrypoint")
+    if isinstance(entrypoint, str):
+        validate_content_manifest_path(
+            manifest_path,
+            skill_dir,
+            entrypoint,
+            "entrypoint",
+            errors,
+            expected_prefix=None,
+        )
+    elif entrypoint is not None:
+        errors.append(f"{manifest_path.relative_to(REPO_ROOT)}: entrypoint must be a string")
+
+    validate_content_manifest_file_list(
+        manifest_path,
+        skill_dir,
+        data,
+        "rules",
+        errors,
+        required=True,
+        expected_prefix="rules/",
+    )
+    validate_content_manifest_file_list(
+        manifest_path,
+        skill_dir,
+        data,
+        "templates",
+        errors,
+        required=False,
+        expected_prefix="templates/",
+    )
+    validate_content_manifest_file_list(
+        manifest_path,
+        CONTENT_ROOT,
+        data,
+        "shared",
+        errors,
+        required=False,
+        expected_prefix="shared/",
+    )
+
+    rules_dir = skill_dir / "rules"
+    if not rules_dir.exists():
+        errors.append(f"{skill_dir.relative_to(REPO_ROOT)}: missing rules/")
+
+
+def validate_content_manifest_path(
+    manifest_path: Path,
+    base_dir: Path,
+    value: str,
+    field: str,
+    errors: list[str],
+    expected_prefix: str | None,
+) -> None:
+    rel_manifest = manifest_path.relative_to(REPO_ROOT)
+    if not value:
+        errors.append(f"{rel_manifest}: {field} contains an empty path")
+        return
+    if value.startswith("/"):
+        errors.append(f"{rel_manifest}: {field} path must be relative: '{value}'")
+        return
+    path = Path(value)
+    if ".." in path.parts:
+        errors.append(f"{rel_manifest}: {field} path must not traverse upward: '{value}'")
+        return
+    if expected_prefix is not None and not value.startswith(expected_prefix):
+        errors.append(
+            f"{rel_manifest}: {field} path must start with '{expected_prefix}': '{value}'"
+        )
+        return
+    resolved = base_dir / path
+    if not resolved.exists():
+        errors.append(f"{rel_manifest}: {field} path not found: '{value}'")
+        return
+    if not resolved.is_file():
+        errors.append(f"{rel_manifest}: {field} path is not a file: '{value}'")
+
+
+def validate_content_manifest_file_list(
+    manifest_path: Path,
+    base_dir: Path,
+    data: dict,
+    field: str,
+    errors: list[str],
+    required: bool,
+    expected_prefix: str,
+) -> None:
+    rel_manifest = manifest_path.relative_to(REPO_ROOT)
+    if field not in data:
+        if required:
+            errors.append(f"{rel_manifest}: missing '{field}'")
+        return
+
+    values = data.get(field)
+    if not isinstance(values, list):
+        errors.append(f"{rel_manifest}: '{field}' must be a list")
+        return
+    if required and not values:
+        errors.append(f"{rel_manifest}: '{field}' must not be empty")
+        return
+
+    seen: set[str] = set()
+    for value in values:
+        if not isinstance(value, str):
+            errors.append(f"{rel_manifest}: '{field}' entries must be strings")
+            continue
+        if value in seen:
+            errors.append(f"{rel_manifest}: duplicate '{field}' entry '{value}'")
+            continue
+        seen.add(value)
+        validate_content_manifest_path(
+            manifest_path,
+            base_dir,
+            value,
+            field,
+            errors,
+            expected_prefix=expected_prefix,
+        )
+
+
 def validate_markdown_references(md_file: Path, errors: list[str]) -> None:
     text = md_file.read_text(encoding="utf-8")
     for ref in BACKTICK_MD_RE.findall(text):
@@ -137,20 +291,22 @@ def validate_markdown_references(md_file: Path, errors: list[str]) -> None:
 
 
 def validate_bundle_manifests(errors: list[str]) -> None:
-    if not BUNDLES_ROOT.exists():
-        errors.append(".codex-dev/bundles: missing bundle manifests directory")
+    if not MODULES_ROOT.exists():
+        errors.append("src/modules: missing module manifests directory")
         return
 
-    manifests = sorted(BUNDLES_ROOT.glob("*.yaml"))
+    manifests = bundle_manifest_paths()
     if not manifests:
-        errors.append(".codex-dev/bundles: no bundle manifests found")
+        errors.append("src/modules: no module manifests found")
         return
 
-    bundle_names = {path.stem for path in manifests}
+    bundle_names_set = set(bundle_names())
+    bundle_data: dict[str, dict] = {}
     for manifest in manifests:
         data = yaml_load(manifest, errors)
         if data is None:
             continue
+        bundle_data[manifest.stem] = data
         for field in ("name", "description"):
             if not data.get(field):
                 errors.append(f"{manifest.relative_to(REPO_ROOT)}: missing '{field}'")
@@ -158,16 +314,99 @@ def validate_bundle_manifests(errors: list[str]) -> None:
             errors.append(
                 f"{manifest.relative_to(REPO_ROOT)}: name must match file stem"
             )
-        for skill in data.get("skills", []):
-            if not (SKILLS_ROOT / skill / "SKILL.md").exists():
+
+        skills = validate_bundle_list_field(manifest, data, "skills", errors)
+        includes = validate_bundle_list_field(manifest, data, "includes", errors)
+
+        for skill in skills:
+            if not skill_source_exists(skill):
                 errors.append(
                     f"{manifest.relative_to(REPO_ROOT)}: unknown skill '{skill}'"
                 )
-        for included in data.get("includes", []):
-            if included not in bundle_names:
+
+        for included in includes:
+            if included not in bundle_names_set:
                 errors.append(
                     f"{manifest.relative_to(REPO_ROOT)}: unknown included bundle '{included}'"
                 )
+
+    validate_bundle_include_cycles(manifests, bundle_data, errors)
+
+
+def validate_bundle_list_field(
+    manifest_path: Path,
+    data: dict,
+    field: str,
+    errors: list[str],
+) -> list[str]:
+    rel_manifest = manifest_path.relative_to(REPO_ROOT)
+    value = data.get(field)
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        errors.append(f"{rel_manifest}: '{field}' must be a list")
+        return []
+
+    items: list[str] = []
+    seen: dict[str, int] = {}
+    for index, item in enumerate(value, start=1):
+        if not isinstance(item, str):
+            errors.append(f"{rel_manifest}: '{field}' item #{index} must be a string")
+            continue
+        if not item:
+            errors.append(f"{rel_manifest}: '{field}' item #{index} must not be empty")
+            continue
+        if item in seen:
+            errors.append(
+                f"{rel_manifest}: duplicate '{field}' entry '{item}' "
+                f"(items {seen[item]} and {index})"
+            )
+        else:
+            seen[item] = index
+        items.append(item)
+    return items
+
+
+def validate_bundle_include_cycles(
+    manifests: list[Path],
+    bundle_data: dict[str, dict],
+    errors: list[str],
+) -> None:
+    visiting: set[str] = set()
+    visited: set[str] = set()
+    reported: set[tuple[str, ...]] = set()
+
+    def report_cycle(path: list[str]) -> None:
+        cycle = path[path.index(path[-1]) :]
+        signature = tuple(cycle)
+        if signature in reported:
+            return
+        reported.add(signature)
+        cycle_text = " -> ".join(cycle)
+        errors.append(f"src/modules/{path[-1]}.yaml: include cycle detected: {cycle_text}")
+
+    def visit(name: str, path: list[str]) -> None:
+        if name in visiting:
+            report_cycle(path + [name])
+            return
+        if name in visited:
+            return
+
+        visiting.add(name)
+        path.append(name)
+        data = bundle_data.get(name)
+        if isinstance(data, dict):
+            includes = data.get("includes")
+            if isinstance(includes, list):
+                for included in includes:
+                    if isinstance(included, str) and included in bundle_data:
+                        visit(included, path)
+        path.pop()
+        visiting.remove(name)
+        visited.add(name)
+
+    for manifest in manifests:
+        visit(manifest.stem, [])
 
 
 def yaml_load(path: Path, errors: list[str]) -> dict | None:
@@ -236,26 +475,14 @@ def validate_built_plugins(errors: list[str]) -> None:
 def main() -> int:
     errors: list[str] = []
 
-    if not SKILLS_ROOT.exists():
-        print(".codex-dev/skills directory not found", file=sys.stderr)
-        return 1
-
     skill_dirs = iter_skill_dirs()
     if not skill_dirs:
-        errors.append("no skill directories found in .codex-dev/skills/")
+        errors.append("no skill directories found in src/content/skills/")
 
     for skill_dir in skill_dirs:
-        skill_md = skill_dir / "SKILL.md"
-        if not skill_md.exists():
-            errors.append(f"{skill_dir}: missing SKILL.md")
-            continue
-        validate_frontmatter(skill_md, errors)
+        validate_content_skill(skill_dir, errors)
 
-        references_dir = skill_dir / "references"
-        if not references_dir.exists():
-            errors.append(f"{skill_dir}: missing references/")
-
-    markdown_files = sorted(SKILLS_ROOT.rglob("*.md"))
+    markdown_files = sorted(CONTENT_ROOT.rglob("*.md")) if CONTENT_ROOT.exists() else []
     if PLUGINS_ROOT.exists():
         markdown_files.extend(sorted(PLUGINS_ROOT.rglob("*.md")))
     top_level_docs = [REPO_ROOT / doc for doc in TOP_LEVEL_DOCS]

@@ -13,7 +13,6 @@ bash /tmp/codex-story-skills-install.sh --plugin fiction-core --version v1.0.0
 - `fiction-core`
 - `engineering-addon`
 - `obsidian-addon`
-- `full`
 
 Для latest GitHub Release asset:
 
@@ -54,11 +53,12 @@ test -f ~/plugins/fiction-core/.codex-plugin/plugin.json
 - `fiction-core` содержит fiction project skills.
 - `engineering-addon` добавляет `rfc-adr-assistant`.
 - `obsidian-addon` добавляет `obsidian-compat`.
-- `full` содержит все текущие skills.
 
 ## Development Build Устарел
 
-Generated plugins нужно пересобрать из `.codex-dev/skills/`:
+Generated plugins нужно пересобрать из текущего source layer:
+
+- skills из `src/content/skills/`
 
 ```bash
 python3 .codex-dev/scripts/build-plugins.py

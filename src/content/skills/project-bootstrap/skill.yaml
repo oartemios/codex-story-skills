@@ -1,0 +1,20 @@
+id: project-bootstrap
+kind: skill
+title_ru: project-bootstrap
+description_ru: Skill для запуска и структурирования художественных проектов, включая стартовую раскладку, миграцию и выравнивание рабочей базы.
+product_area: fiction
+tier: core
+entrypoint: prompt.md
+rules:
+  - rules/STARTER_RULES.md
+  - rules/MIGRATION_RULES.md
+  - rules/LAYOUT_RULES.md
+  - rules/TRIGGER_RULES.md
+templates:
+  - templates/starter-pack-template.md
+  - templates/migration-plan-template.md
+capabilities:
+  - writing
+  - project-structure
+  - project-bootstrap
+codex_trigger_name: project-bootstrap

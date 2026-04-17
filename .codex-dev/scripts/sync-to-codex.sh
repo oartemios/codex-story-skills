@@ -3,10 +3,18 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-SOURCE_DIR="${REPO_ROOT}/skills"
+SOURCE_DIR=""
 DEST_DIR="${HOME}/.codex/skills"
 BACKUP_ROOT=""
 DRY_RUN=0
+TEMP_DIR=""
+
+cleanup() {
+  if [[ -n "${TEMP_DIR}" ]]; then
+    rm -rf "${TEMP_DIR}"
+  fi
+}
+trap cleanup EXIT
 
 usage() {
   cat <<'EOF'
@@ -46,13 +54,14 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ ! -d "${SOURCE_DIR}" ]]; then
-  echo "Source skills directory not found: ${SOURCE_DIR}" >&2
-  exit 1
-fi
-
 echo "==> Validating skills package"
 python3 "${SCRIPT_DIR}/validate-skills.py"
+
+TEMP_DIR="$(mktemp -d)"
+SOURCE_DIR="${TEMP_DIR}/codex-skills"
+
+echo "==> Building raw Codex skills package"
+python3 "${SCRIPT_DIR}/build-plugins.py" --raw-skills-dir "${SOURCE_DIR}"
 
 if [[ -z "${BACKUP_ROOT}" ]]; then
   BACKUP_ROOT="$(dirname "${DEST_DIR}")/skill-backups"

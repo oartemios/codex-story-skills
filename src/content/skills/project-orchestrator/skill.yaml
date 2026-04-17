@@ -1,0 +1,21 @@
+id: project-orchestrator
+kind: skill
+title_ru: project-orchestrator
+description_ru: Оркестрационный skill для художественного проекта. Используй для разбиения большой задачи на шаги, выбора следующего skill и определения порядка действий без смешения ролей исполнения.
+product_area: fiction
+tier: core
+entrypoint: prompt.md
+rules:
+  - rules/TRIGGER_RULES.md
+  - rules/ROUTING_RULES.md
+  - rules/SCENARIO_RULES.md
+  - rules/WORKFLOW_RULES.md
+  - rules/RUNTIME_RULES.md
+templates:
+  - templates/next-step-template.md
+  - templates/orchestration-plan-template.md
+capabilities:
+  - writing
+  - project-structure
+  - orchestration
+codex_trigger_name: project-orchestrator

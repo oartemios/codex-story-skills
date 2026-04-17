@@ -1,0 +1,23 @@
+id: story-analyst
+kind: skill
+title_ru: story-analyst
+description_ru: Аналитический skill для художественного проекта. Используй для диагностики ритма, противоречий, арок и сюжетных рисков без подмены анализа переписыванием канона.
+product_area: fiction
+tier: core
+entrypoint: prompt.md
+rules:
+  - rules/ANALYSIS_RULES.md
+  - rules/PACING_RULES.md
+  - rules/ARC_RULES.md
+  - rules/CONSISTENCY_RULES.md
+  - rules/TRIGGER_RULES.md
+templates:
+  - templates/story-diagnostics-template.md
+  - templates/pacing-review-template.md
+  - templates/arc-review-template.md
+  - templates/contradiction-report-template.md
+capabilities:
+  - writing
+  - project-structure
+  - story-analysis
+codex_trigger_name: story-analyst
