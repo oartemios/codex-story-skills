@@ -10,7 +10,7 @@ Each release must publish:
 - `engineering-addon.zip`
 - `obsidian-addon.zip`
 
-These files are built from `src/modules/*.yaml`, migrated `src/content/`, and any remaining legacy `.codex-dev/skills/` content while the migration is still in flight.
+These files are built from `src/modules/*.yaml` and `src/content/`.
 
 ## Automated Release
 

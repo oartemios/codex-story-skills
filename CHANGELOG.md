@@ -16,7 +16,7 @@ All notable changes to this project are documented here.
 ### Added
 
 - Plugin-first package layout with `.codex-dev/` as source/build layer and `plugins/` as generated installable artifacts.
-- `fiction-core`, `engineering-addon`, `obsidian-addon`, and `full` plugin bundles.
+- `fiction-core`, `engineering-addon`, and `obsidian-addon` plugin bundles.
 - `rfc-adr-assistant` skill for optional engineering RFC/ADR drafting and review.
 - `obsidian-compat` skill for optional Obsidian vault compatibility.
 - Release asset packaging script for plugin zip files.

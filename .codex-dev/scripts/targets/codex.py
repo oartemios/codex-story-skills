@@ -11,9 +11,7 @@ from bundle_sources import (
     CONTENT_SKILLS_ROOT,
     PLUGINS_ROOT,
     REPO_ROOT,
-    SKILLS_ROOT,
     all_skill_names,
-    bundle_names,
     load_bundle,
     resolve_bundle_skills,
 )
@@ -68,13 +66,9 @@ def render_codex_skill(source: Path, dest: Path) -> None:
 
 def copy_skill(skill: str, dest: Path) -> None:
     content_source = CONTENT_SKILLS_ROOT / skill
-    legacy_source = SKILLS_ROOT / skill
 
     if (content_source / "skill.yaml").exists():
         render_codex_skill(content_source, dest)
-        return
-    if legacy_source.exists():
-        copy_tree(legacy_source, dest)
         return
     raise ValueError(f"Skill source not found: {skill}")
 
@@ -84,8 +78,7 @@ def copy_shared(dest: Path) -> None:
         copy_tree(CONTENT_SHARED_ROOT / "templates", dest / "_shared" / "templates")
         shutil.copy2(CONTENT_SHARED_ROOT / "conventions.md", dest / "CONVENTIONS.md")
         return
-    copy_tree(SKILLS_ROOT / "_shared", dest / "_shared")
-    shutil.copy2(SKILLS_ROOT / "CONVENTIONS.md", dest / "CONVENTIONS.md")
+    raise ValueError("Shared content not found: src/content/shared")
 
 
 def plugin_manifest(bundle: dict) -> dict:

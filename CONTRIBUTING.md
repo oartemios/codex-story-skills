@@ -6,7 +6,6 @@ For repository layout and build architecture, see `docs/ARCHITECTURE.md`.
 
 ## Source Of Truth
 
-- Legacy atomic source skills that are not yet migrated live in `.codex-dev/skills/`.
 - Migrated agent-neutral skill content lives in `src/content/skills/`.
 - Shared conventions and shared templates live in `src/content/shared/`.
 - Product module manifests live in `src/modules/`.
@@ -14,7 +13,7 @@ For repository layout and build architecture, see `docs/ARCHITECTURE.md`.
 - Generated installable plugins are built into `plugins/` locally.
 - Public user-facing scripts live in `scripts/`.
 
-Do not commit generated plugin bundles or copied skill trees. Change `.codex-dev/skills/`, `src/content/`, or `src/modules/`, then rebuild locally.
+Do not commit generated plugin bundles. Change `src/content/` or `src/modules/`, then rebuild locally.
 
 ## Local Build
 
@@ -25,7 +24,7 @@ python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
 ```
 
-Release zips are written to `dist/`. Both `plugins/` build output and `dist/` are ignored; source content remains split between `.codex-dev/skills/` for unmigrated skills and `src/content/` for migrated skills.
+Release zips are written to `dist/`. Both `plugins/` build output and `dist/` are ignored; source content lives in `src/content/`.
 
 ## Local Hooks
 
@@ -68,12 +67,11 @@ Do not present raw sync as the public install path. Users install built plugin r
 
 ## Adding Or Moving Skills
 
-1. Add or update the atomic skill under `src/content/skills/<skill-name>/` for new migrated content, or `.codex-dev/skills/<skill-name>/` for legacy content.
-2. For migrated content, keep `skill.yaml` valid with `id`, `description_ru`, and `entrypoint`.
-3. For legacy content, keep `SKILL.md` frontmatter valid with `name` and `description`.
-4. Put migrated rules in `rules/`; keep legacy reusable rules in `references/` only for unmigrated content; keep templates in `templates/`.
-5. Add the skill to the relevant `src/modules/*.yaml` manifest.
-6. Rebuild plugins and validate.
+1. Add or update the skill under `src/content/skills/<skill-name>/`.
+2. Keep `skill.yaml` valid with `id`, `description_ru`, and `entrypoint`.
+3. Put rules in `rules/` and templates in `templates/`.
+4. Add the skill to the relevant `src/modules/*.yaml` manifest.
+5. Rebuild plugins and validate.
 
 The RFC/ADR skill is named `rfc-adr-assistant`. Do not reintroduce `developers-skills`.
 

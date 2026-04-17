@@ -37,9 +37,7 @@ def load_bundle(name: str) -> dict:
 
 
 def skill_source_exists(skill: str) -> bool:
-    return (SKILLS_ROOT / skill / "SKILL.md").exists() or (
-        CONTENT_SKILLS_ROOT / skill / "skill.yaml"
-    ).exists()
+    return (CONTENT_SKILLS_ROOT / skill / "skill.yaml").exists()
 
 
 def resolve_bundle_skills(name: str, seen: set[str] | None = None) -> tuple[list[str], bool]:
@@ -67,15 +65,10 @@ def resolve_bundle_skills(name: str, seen: set[str] | None = None) -> tuple[list
 
 
 def all_skill_names() -> list[str]:
-    names = {
+    if not CONTENT_SKILLS_ROOT.exists():
+        return []
+    return sorted(
         path.name
-        for path in SKILLS_ROOT.iterdir()
-        if path.is_dir() and not path.name.startswith(".") and path.name != "_shared"
-    }
-    if CONTENT_SKILLS_ROOT.exists():
-        names.update(
-            path.name
-            for path in CONTENT_SKILLS_ROOT.iterdir()
-            if path.is_dir() and not path.name.startswith(".")
-        )
-    return sorted(names)
+        for path in CONTENT_SKILLS_ROOT.iterdir()
+        if path.is_dir() and not path.name.startswith(".")
+    )

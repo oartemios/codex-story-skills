@@ -8,14 +8,12 @@ import sys
 from pathlib import Path
 
 from bundle_sources import (
-    DEV_ROOT,
     CONTENT_ROOT,
     CONTENT_SHARED_ROOT,
     CONTENT_SKILLS_ROOT,
     MODULES_ROOT,
     PLUGINS_ROOT,
     REPO_ROOT,
-    SKILLS_ROOT,
     bundle_manifest_paths,
     bundle_names,
     skill_source_exists,
@@ -43,14 +41,6 @@ TOP_LEVEL_REFERENCE_DOCS = TOP_LEVEL_DOCS + ("ROADMAP.md",)
 
 
 def iter_skill_dirs() -> list[Path]:
-    return sorted(
-        path
-        for path in SKILLS_ROOT.iterdir()
-        if path.is_dir() and not path.name.startswith(".") and path.name != "_shared"
-    )
-
-
-def iter_content_skill_dirs() -> list[Path]:
     if not CONTENT_SKILLS_ROOT.exists():
         return []
     return sorted(
@@ -64,10 +54,6 @@ def resolve_md_reference(source: Path, ref: str) -> Path | None:
     if source.parent == REPO_ROOT and "/" not in ref and ref in TOP_LEVEL_REFERENCE_DOCS:
         return REPO_ROOT / ref
     if ref.startswith("skills/"):
-        if PLUGINS_ROOT in source.parents:
-            for parent in source.parents:
-                if parent.parent == PLUGINS_ROOT:
-                    return parent / ref
         if ref == "skills/CONVENTIONS.md":
             content_ref = CONTENT_SHARED_ROOT / "conventions.md"
         elif ref.startswith("skills/_shared/"):
@@ -76,7 +62,7 @@ def resolve_md_reference(source: Path, ref: str) -> Path | None:
             content_ref = CONTENT_ROOT / ref.removeprefix("skills/")
         if content_ref.exists():
             return content_ref
-        return DEV_ROOT / ref
+        return None
     if ref.startswith("templates/"):
         if CONTENT_SKILLS_ROOT in source.parents:
             for parent in source.parents:
@@ -489,32 +475,14 @@ def validate_built_plugins(errors: list[str]) -> None:
 def main() -> int:
     errors: list[str] = []
 
-    if not SKILLS_ROOT.exists():
-        print(".codex-dev/skills directory not found", file=sys.stderr)
-        return 1
-
     skill_dirs = iter_skill_dirs()
-    content_skill_dirs = iter_content_skill_dirs()
-    if not skill_dirs and not content_skill_dirs:
-        errors.append("no skill directories found in .codex-dev/skills/ or src/content/skills/")
+    if not skill_dirs:
+        errors.append("no skill directories found in src/content/skills/")
 
     for skill_dir in skill_dirs:
-        skill_md = skill_dir / "SKILL.md"
-        if not skill_md.exists():
-            errors.append(f"{skill_dir}: missing SKILL.md")
-            continue
-        validate_frontmatter(skill_md, errors)
-
-        references_dir = skill_dir / "references"
-        if not references_dir.exists():
-            errors.append(f"{skill_dir}: missing references/")
-
-    for skill_dir in content_skill_dirs:
         validate_content_skill(skill_dir, errors)
 
-    markdown_files = sorted(SKILLS_ROOT.rglob("*.md"))
-    if CONTENT_ROOT.exists():
-        markdown_files.extend(sorted(CONTENT_ROOT.rglob("*.md")))
+    markdown_files = sorted(CONTENT_ROOT.rglob("*.md")) if CONTENT_ROOT.exists() else []
     if PLUGINS_ROOT.exists():
         markdown_files.extend(sorted(PLUGINS_ROOT.rglob("*.md")))
     top_level_docs = [REPO_ROOT / doc for doc in TOP_LEVEL_DOCS]
@@ -535,7 +503,7 @@ def main() -> int:
         return 1
 
     print(
-        f"Validation passed: {len(skill_dirs) + len(content_skill_dirs)} skills, {len(markdown_files)} markdown files checked."
+        f"Validation passed: {len(skill_dirs)} skills, {len(markdown_files)} markdown files checked."
     )
     return 0
 

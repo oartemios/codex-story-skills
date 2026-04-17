@@ -11,7 +11,6 @@ from pathlib import Path
 
 DEV_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = DEV_ROOT.parent
-SKILLS_ROOT = DEV_ROOT / "skills"
 CONTENT_ROOT = REPO_ROOT / "src" / "content"
 
 PUBLIC_DOCS = (
@@ -158,10 +157,9 @@ ENGLISH_HEADING_PATTERNS = tuple(
 
 
 def iter_skill_markdown() -> list[Path]:
-    files = sorted(SKILLS_ROOT.rglob("*.md"))
-    if CONTENT_ROOT.exists():
-        files.extend(sorted(CONTENT_ROOT.rglob("*.md")))
-    return files
+    if not CONTENT_ROOT.exists():
+        return []
+    return sorted(CONTENT_ROOT.rglob("*.md"))
 
 
 def iter_public_docs() -> list[Path]:
@@ -268,9 +266,9 @@ def validate_scope(scope: str) -> tuple[int, list[str]]:
     files: list[Path] = []
 
     if scope in ("skills", "all"):
-        if not SKILLS_ROOT.exists():
-            return 0, [".codex-dev/skills directory not found"]
         skill_files = iter_skill_markdown()
+        if not skill_files:
+            return 0, ["src/content/skills directory not found"]
         files.extend(skill_files)
         for path in skill_files:
             validate_skill_file(path, errors)

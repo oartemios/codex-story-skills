@@ -8,8 +8,8 @@ import shutil
 import sys
 from pathlib import Path
 
-from bundle_sources import PLUGINS_ROOT
-from targets.codex import build_plugin, build_raw_codex_skills, bundle_names
+from bundle_sources import PLUGINS_ROOT, bundle_names
+from targets.codex import build_plugin, build_raw_codex_skills
 
 
 def main() -> int:
