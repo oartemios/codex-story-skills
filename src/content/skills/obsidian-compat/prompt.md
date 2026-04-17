@@ -1,8 +1,3 @@
----
-name: obsidian-compat
-description: Опциональный skill для сопоставления проектной базы с Obsidian vault без превращения Obsidian в источник истины.
----
-
 # SKILL.md
 
 ## Роль агента

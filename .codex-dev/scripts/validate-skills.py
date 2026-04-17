@@ -12,8 +12,12 @@ from bundle_manifest import load_bundle_manifest
 
 DEV_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = DEV_ROOT.parent
+SRC_ROOT = REPO_ROOT / "src"
 SKILLS_ROOT = DEV_ROOT / "skills"
-BUNDLES_ROOT = DEV_ROOT / "bundles"
+MODULES_ROOT = SRC_ROOT / "modules"
+CONTENT_ROOT = SRC_ROOT / "content"
+CONTENT_SKILLS_ROOT = CONTENT_ROOT / "skills"
+CONTENT_SHARED_ROOT = CONTENT_ROOT / "shared"
 PLUGINS_ROOT = REPO_ROOT / "plugins"
 
 BACKTICK_MD_RE = re.compile(r"`([^`]+\.md)`")
@@ -43,6 +47,22 @@ def iter_skill_dirs() -> list[Path]:
     )
 
 
+def iter_content_skill_dirs() -> list[Path]:
+    if not CONTENT_SKILLS_ROOT.exists():
+        return []
+    return sorted(
+        path
+        for path in CONTENT_SKILLS_ROOT.iterdir()
+        if path.is_dir() and not path.name.startswith(".")
+    )
+
+
+def skill_source_exists(skill: str) -> bool:
+    return (SKILLS_ROOT / skill / "SKILL.md").exists() or (
+        CONTENT_SKILLS_ROOT / skill / "skill.yaml"
+    ).exists()
+
+
 def resolve_md_reference(source: Path, ref: str) -> Path | None:
     if source.parent == REPO_ROOT and "/" not in ref and ref in TOP_LEVEL_REFERENCE_DOCS:
         return REPO_ROOT / ref
@@ -51,6 +71,14 @@ def resolve_md_reference(source: Path, ref: str) -> Path | None:
             for parent in source.parents:
                 if parent.parent == PLUGINS_ROOT:
                     return parent / ref
+        if ref == "skills/CONVENTIONS.md":
+            content_ref = CONTENT_SHARED_ROOT / "conventions.md"
+        elif ref.startswith("skills/_shared/"):
+            content_ref = CONTENT_SHARED_ROOT / ref.removeprefix("skills/_shared/")
+        else:
+            content_ref = CONTENT_ROOT / ref.removeprefix("skills/")
+        if content_ref.exists():
+            return content_ref
         return DEV_ROOT / ref
     if ref.startswith("templates/"):
         for parent in source.parents:
@@ -116,6 +144,30 @@ def validate_frontmatter(skill_md: Path, errors: list[str]) -> None:
         errors.append(f"{skill_md}: frontmatter must contain 'description'")
 
 
+def validate_content_skill(skill_dir: Path, errors: list[str]) -> None:
+    manifest_path = skill_dir / "skill.yaml"
+    prompt_path = skill_dir / "prompt.md"
+    if not manifest_path.exists():
+        errors.append(f"{skill_dir.relative_to(REPO_ROOT)}: missing skill.yaml")
+        return
+    if not prompt_path.exists():
+        errors.append(f"{skill_dir.relative_to(REPO_ROOT)}: missing prompt.md")
+
+    data = yaml_load(manifest_path, errors)
+    if data is None:
+        return
+    if data.get("id") != skill_dir.name:
+        errors.append(
+            f"{manifest_path.relative_to(REPO_ROOT)}: id must match skill directory"
+        )
+    for field in ("kind", "description_ru", "entrypoint"):
+        if not data.get(field):
+            errors.append(f"{manifest_path.relative_to(REPO_ROOT)}: missing '{field}'")
+    rules_dir = skill_dir / "rules"
+    if not rules_dir.exists():
+        errors.append(f"{skill_dir.relative_to(REPO_ROOT)}: missing rules/")
+
+
 def validate_markdown_references(md_file: Path, errors: list[str]) -> None:
     text = md_file.read_text(encoding="utf-8")
     for ref in BACKTICK_MD_RE.findall(text):
@@ -137,13 +189,13 @@ def validate_markdown_references(md_file: Path, errors: list[str]) -> None:
 
 
 def validate_bundle_manifests(errors: list[str]) -> None:
-    if not BUNDLES_ROOT.exists():
-        errors.append(".codex-dev/bundles: missing bundle manifests directory")
+    if not MODULES_ROOT.exists():
+        errors.append("src/modules: missing module manifests directory")
         return
 
-    manifests = sorted(BUNDLES_ROOT.glob("*.yaml"))
+    manifests = sorted(MODULES_ROOT.glob("*.yaml"))
     if not manifests:
-        errors.append(".codex-dev/bundles: no bundle manifests found")
+        errors.append("src/modules: no module manifests found")
         return
 
     bundle_names = {path.stem for path in manifests}
@@ -159,7 +211,7 @@ def validate_bundle_manifests(errors: list[str]) -> None:
                 f"{manifest.relative_to(REPO_ROOT)}: name must match file stem"
             )
         for skill in data.get("skills", []):
-            if not (SKILLS_ROOT / skill / "SKILL.md").exists():
+            if not skill_source_exists(skill):
                 errors.append(
                     f"{manifest.relative_to(REPO_ROOT)}: unknown skill '{skill}'"
                 )
@@ -241,8 +293,9 @@ def main() -> int:
         return 1
 
     skill_dirs = iter_skill_dirs()
-    if not skill_dirs:
-        errors.append("no skill directories found in .codex-dev/skills/")
+    content_skill_dirs = iter_content_skill_dirs()
+    if not skill_dirs and not content_skill_dirs:
+        errors.append("no skill directories found in .codex-dev/skills/ or src/content/skills/")
 
     for skill_dir in skill_dirs:
         skill_md = skill_dir / "SKILL.md"
@@ -255,7 +308,12 @@ def main() -> int:
         if not references_dir.exists():
             errors.append(f"{skill_dir}: missing references/")
 
+    for skill_dir in content_skill_dirs:
+        validate_content_skill(skill_dir, errors)
+
     markdown_files = sorted(SKILLS_ROOT.rglob("*.md"))
+    if CONTENT_ROOT.exists():
+        markdown_files.extend(sorted(CONTENT_ROOT.rglob("*.md")))
     if PLUGINS_ROOT.exists():
         markdown_files.extend(sorted(PLUGINS_ROOT.rglob("*.md")))
     top_level_docs = [REPO_ROOT / doc for doc in TOP_LEVEL_DOCS]
@@ -276,7 +334,7 @@ def main() -> int:
         return 1
 
     print(
-        f"Validation passed: {len(skill_dirs)} skills, {len(markdown_files)} markdown files checked."
+        f"Validation passed: {len(skill_dirs) + len(content_skill_dirs)} skills, {len(markdown_files)} markdown files checked."
     )
     return 0
 

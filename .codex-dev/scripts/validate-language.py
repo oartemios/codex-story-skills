@@ -12,6 +12,7 @@ from pathlib import Path
 DEV_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = DEV_ROOT.parent
 SKILLS_ROOT = DEV_ROOT / "skills"
+CONTENT_ROOT = REPO_ROOT / "src" / "content"
 
 PUBLIC_DOCS = (
     REPO_ROOT / "README.md",
@@ -20,6 +21,7 @@ PUBLIC_DOCS = (
     REPO_ROOT / "EXAMPLES.md",
     REPO_ROOT / "TROUBLESHOOTING.md",
     REPO_ROOT / "docs" / "ARCHITECTURE.md",
+    REPO_ROOT / "docs" / "PACKAGING.md",
     REPO_ROOT / "docs" / "SMOKE_TESTS.md",
 )
 
@@ -156,7 +158,10 @@ ENGLISH_HEADING_PATTERNS = tuple(
 
 
 def iter_skill_markdown() -> list[Path]:
-    return sorted(SKILLS_ROOT.rglob("*.md"))
+    files = sorted(SKILLS_ROOT.rglob("*.md"))
+    if CONTENT_ROOT.exists():
+        files.extend(sorted(CONTENT_ROOT.rglob("*.md")))
+    return files
 
 
 def iter_public_docs() -> list[Path]:

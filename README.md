@@ -77,6 +77,7 @@ bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --plugin obsi
 - `EXAMPLES.md`: примеры первых запросов
 - `TROUBLESHOOTING.md`: проблемы установки и routing
 - `docs/ARCHITECTURE.md`: архитектура репозитория и модель сборки
+- `docs/PACKAGING.md`: целевая multi-agent packaging модель
 - `docs/RELEASE.md`: release workflow и контракт assets
 - `CONTRIBUTING.md`: разработка skills и plugin build workflow
 - `CHANGELOG.md`: история релизов

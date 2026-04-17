@@ -1,0 +1,14 @@
+id: obsidian-compat
+kind: skill
+title_ru: obsidian-compat
+description_ru: Опциональный skill для сопоставления проектной базы с Obsidian vault без превращения Obsidian в источник истины.
+product_area: support
+tier: optional
+entrypoint: prompt.md
+rules:
+  - rules/TRIGGER_RULES.md
+capabilities:
+  - writing
+  - project-structure
+  - obsidian-compatibility
+codex_trigger_name: obsidian-compat

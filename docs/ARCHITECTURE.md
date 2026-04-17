@@ -8,18 +8,22 @@
 codex-story-skills/
   .codex-dev/
     skills/          # источник истины для atomic skills
-    bundles/         # внутренние bundle manifests
     scripts/         # сборка, валидация, release и dev tooling
+  src/
+    content/         # agent-neutral pilot source
+    modules/         # agent-neutral product manifests
   plugins/           # ignored локальный build output
   scripts/           # публичные install entrypoints
   docs/
 ```
 
+Текущая архитектура является Codex plugin-first baseline. Целевое направление для multi-agent packaging описано в `docs/PACKAGING.md`: один общий source layer и отдельные targets для Codex, Claude Code и Qwen Code.
+
 ## Источник истины
 
-Исходные atomic skills живут только в `.codex-dev/skills/`.
+Legacy atomic skills пока живут в `.codex-dev/skills/`. Agent-neutral pilot source уже живет в `src/content/`: shared conventions, shared templates и `obsidian-compat`.
 
-Bundle manifests лежат в `.codex-dev/bundles/*.yaml` и описывают, какие skills попадают в каждый plugin release asset.
+Product manifests лежат в `src/modules/*.yaml` и описывают, какие skills попадают в каждый plugin release asset. Это первый вынесенный agent-neutral слой целевой multi-agent packaging модели.
 
 Сгенерированные plugin bundles собираются локально в `plugins/` и игнорируются git. Release zip-файлы собираются в `dist/` и тоже игнорируются.
 

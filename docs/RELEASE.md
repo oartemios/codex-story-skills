@@ -11,7 +11,7 @@ Each release must publish:
 - `obsidian-addon.zip`
 - `full.zip`
 
-These files are built from `.codex-dev/bundles/*.yaml` and `.codex-dev/skills/`.
+These files are built from `src/modules/*.yaml`, legacy `.codex-dev/skills/`, and migrated `src/content/`.
 
 ## Automated Release
 

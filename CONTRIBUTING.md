@@ -6,13 +6,14 @@ For repository layout and build architecture, see `docs/ARCHITECTURE.md`.
 
 ## Source Of Truth
 
-- Atomic source skills live only in `.codex-dev/skills/`.
-- Bundle manifests live in `.codex-dev/bundles/`.
+- Legacy atomic source skills live in `.codex-dev/skills/`.
+- Migrated agent-neutral skill content lives in `src/content/`.
+- Product module manifests live in `src/modules/`.
 - Build, validation, packaging, and raw dev sync tooling lives in `.codex-dev/scripts/`.
 - Generated installable plugins are built into `plugins/` locally.
 - Public user-facing scripts live in `scripts/`.
 
-Do not commit generated plugin bundles or copied skill trees. Change `.codex-dev/skills/` or `.codex-dev/bundles/`, then rebuild locally.
+Do not commit generated plugin bundles or copied skill trees. Change `.codex-dev/skills/`, `src/content/`, or `src/modules/`, then rebuild locally.
 
 ## Local Build
 
@@ -23,7 +24,7 @@ python3 .codex-dev/scripts/validate-skills.py
 python3 .codex-dev/scripts/package-release-assets.py
 ```
 
-Release zips are written to `dist/`. Both `plugins/` build output and `dist/` are ignored; `.codex-dev/skills/` remains the only source of truth.
+Release zips are written to `dist/`. Both `plugins/` build output and `dist/` are ignored; source content remains in `.codex-dev/skills/` during migration and in `src/content/` for migrated skills.
 
 ## Local Hooks
 
@@ -49,7 +50,7 @@ git tag v1.0.1
 git push origin v1.0.1
 ```
 
-The release workflow builds plugin bundles from `.codex-dev/bundles/*.yaml`, validates them, packages zip assets, and uploads them to GitHub Release.
+The release workflow builds plugin bundles from `src/modules/*.yaml`, validates them, packages zip assets, and uploads them to GitHub Release.
 
 See `docs/RELEASE.md`.
 
@@ -66,11 +67,12 @@ Do not present raw sync as the public install path. Users install built plugin r
 
 ## Adding Or Moving Skills
 
-1. Add or update the atomic skill under `.codex-dev/skills/<skill-name>/`.
-2. Keep `SKILL.md` frontmatter valid with `name` and `description`.
-3. Put reusable rules in `references/` and templates in `templates/`.
-4. Add the skill to the relevant `.codex-dev/bundles/*.yaml` manifest.
-5. Rebuild plugins and validate.
+1. Add or update the atomic skill under `src/content/skills/<skill-name>/` for new migrated content, or `.codex-dev/skills/<skill-name>/` for legacy content.
+2. For migrated content, keep `skill.yaml` valid with `id`, `description_ru`, and `entrypoint`.
+3. For legacy content, keep `SKILL.md` frontmatter valid with `name` and `description`.
+4. Put migrated rules in `rules/`; put legacy reusable rules in `references/`; keep templates in `templates/`.
+5. Add the skill to the relevant `src/modules/*.yaml` manifest.
+6. Rebuild plugins and validate.
 
 The RFC/ADR skill is named `rfc-adr-assistant`. Do not reintroduce `developers-skills`.
 
