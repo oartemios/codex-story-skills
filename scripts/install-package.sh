@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/oartemios/codex-story-skills"
-VERSION="v1.0.1"
+VERSION="latest"
 PLUGINS=()
 ASSET_URL=""
 PLUGIN_ROOT="${HOME}/plugins"

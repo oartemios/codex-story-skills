@@ -17,8 +17,8 @@ These files are built from `src/modules/*.yaml` and `src/content/`.
 Create and push a version tag:
 
 ```bash
-git tag v1.0.1
-git push origin v1.0.1
+git tag vX.Y.Z
+git push origin vX.Y.Z
 ```
 
 GitHub Actions runs `.github/workflows/release.yml`, builds plugin bundles, validates them, packages release assets, and uploads the zip files to the GitHub Release.

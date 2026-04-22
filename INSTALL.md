@@ -7,8 +7,8 @@
 `fiction-core` - пакет по умолчанию:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/oartemios/codex-story-skills/v1.0.1/scripts/install-package.sh -o /tmp/codex-story-skills-install.sh
-bash /tmp/codex-story-skills-install.sh --version v1.0.1
+curl -fsSL https://raw.githubusercontent.com/oartemios/codex-story-skills/v1.0.2/scripts/install-package.sh -o /tmp/codex-story-skills-install.sh
+bash /tmp/codex-story-skills-install.sh --version latest
 ```
 
 Скрипт можно сначала прочитать:
@@ -20,8 +20,8 @@ less /tmp/codex-story-skills-install.sh
 ## Опциональные Addons
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version v1.0.1
-bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v1.0.1
+bash /tmp/codex-story-skills-install.sh --plugin engineering-addon --version latest
+bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version latest
 ```
 
 `obsidian-addon` устанавливается как самостоятельный пакет и может использоваться вместе с `fiction-core`, `engineering-addon` или обоими пакетами.
@@ -34,13 +34,13 @@ bash /tmp/codex-story-skills-install.sh --plugin obsidian-addon --version v1.0.1
 bash /tmp/codex-story-skills-install.sh \
   --plugin engineering-addon \
   --plugin obsidian-addon \
-  --version v1.0.1
+  --version latest
 ```
 
 То же самое через preset:
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version v1.0.1
+bash /tmp/codex-story-skills-install.sh --preset obsidian-engineering --version latest
 ```
 
 Доступные presets:
