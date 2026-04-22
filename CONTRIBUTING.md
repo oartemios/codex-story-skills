@@ -9,7 +9,7 @@ For repository layout and build architecture, see `docs/ARCHITECTURE.md`.
 - Migrated agent-neutral skill content lives in `src/content/skills/`.
 - Shared conventions and shared templates live in `src/content/shared/`.
 - Product module manifests live in `src/modules/`.
-- Build, validation, packaging, and raw dev sync tooling lives in `.codex-dev/scripts/`.
+- Build, validation, packaging, and raw dev sync tooling lives in `scripts/`.
 - Generated installable plugins are built into `plugins/` locally.
 - Public user-facing scripts live in `scripts/`.
 
@@ -18,10 +18,10 @@ Do not commit generated plugin bundles. Change `src/content/` or `src/modules/`,
 ## Local Build
 
 ```bash
-python3 .codex-dev/scripts/build-plugins.py
-python3 .codex-dev/scripts/validate-language.py --scope all
-python3 .codex-dev/scripts/validate-skills.py
-python3 .codex-dev/scripts/package-release-assets.py
+python3 scripts/build-plugins.py
+python3 scripts/validate-language.py --scope all
+python3 scripts/validate-skills.py
+python3 scripts/package-release-assets.py
 ```
 
 Release zips are written to `dist/`. Both `plugins/` build output and `dist/` are ignored; source content lives in `src/content/`.
@@ -31,7 +31,7 @@ Release zips are written to `dist/`. Both `plugins/` build output and `dist/` ar
 Git hooks are opt-in:
 
 ```bash
-.codex-dev/scripts/install-git-hooks.sh
+scripts/install-git-hooks.sh
 ```
 
 Installed hooks:
@@ -59,8 +59,8 @@ See `docs/RELEASE.md`.
 Raw sync is retained only for local source testing:
 
 ```bash
-.codex-dev/scripts/sync-to-codex.sh --dry-run
-.codex-dev/scripts/sync-to-codex.sh
+scripts/sync-to-codex.sh --dry-run
+scripts/sync-to-codex.sh
 ```
 
 Do not present raw sync as the public install path. Users install built plugin release assets through `scripts/install-package.sh`.
@@ -86,10 +86,10 @@ Bundle manifests are internal build inputs, not a user-facing API.
 ## Checks Before PR
 
 ```bash
-python3 .codex-dev/scripts/build-plugins.py
-python3 .codex-dev/scripts/validate-language.py --scope all
-python3 .codex-dev/scripts/validate-skills.py
-python3 .codex-dev/scripts/package-release-assets.py
-bash -n scripts/install-package.sh .codex-dev/scripts/sync-to-codex.sh
+python3 scripts/build-plugins.py
+python3 scripts/validate-language.py --scope all
+python3 scripts/validate-skills.py
+python3 scripts/package-release-assets.py
+bash -n scripts/install-package.sh scripts/sync-to-codex.sh
 scripts/install-package.sh --help
 ```

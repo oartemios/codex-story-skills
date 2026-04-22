@@ -9,8 +9,7 @@ import sys
 from pathlib import Path
 
 
-DEV_ROOT = Path(__file__).resolve().parent.parent
-REPO_ROOT = DEV_ROOT.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent
 CONTENT_ROOT = REPO_ROOT / "src" / "content"
 
 PUBLIC_DOCS = (

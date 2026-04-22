@@ -30,10 +30,10 @@ The release workflow can also be run manually with `workflow_dispatch` and an ex
 Before tagging:
 
 ```bash
-python3 .codex-dev/scripts/build-plugins.py
-python3 .codex-dev/scripts/validate-language.py --scope all
-python3 .codex-dev/scripts/validate-skills.py
-python3 .codex-dev/scripts/package-release-assets.py
+python3 scripts/build-plugins.py
+python3 scripts/validate-language.py --scope all
+python3 scripts/validate-skills.py
+python3 scripts/package-release-assets.py
 ```
 
 Confirm local assets exist:

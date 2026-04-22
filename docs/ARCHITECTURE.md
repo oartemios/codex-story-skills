@@ -6,8 +6,7 @@
 
 ```text
 codex-story-skills/
-  .codex-dev/
-    scripts/         # сборка, валидация, release и dev tooling
+  scripts/           # сборка, валидация, release и dev tooling
   src/
     content/         # agent-neutral source for skills and shared content
     modules/         # agent-neutral product manifests
@@ -35,10 +34,10 @@ Product manifests лежат в `src/modules/*.yaml` и описывают, ка
 ## Сборка
 
 ```bash
-python3 .codex-dev/scripts/build-plugins.py
-python3 .codex-dev/scripts/validate-language.py --scope all
-python3 .codex-dev/scripts/validate-skills.py
-python3 .codex-dev/scripts/package-release-assets.py
+python3 scripts/build-plugins.py
+python3 scripts/validate-language.py --scope all
+python3 scripts/validate-skills.py
+python3 scripts/package-release-assets.py
 ```
 
 ## Release
@@ -56,7 +55,7 @@ Release workflow собирает plugin bundles, валидирует их, у�
 Raw sync оставлен только для локальной проверки исходных skills:
 
 ```bash
-.codex-dev/scripts/sync-to-codex.sh --dry-run
+scripts/sync-to-codex.sh --dry-run
 ```
 
 Не использовать raw sync как публичный install workflow.

@@ -45,8 +45,8 @@ ACTIVE_DOCS = TOP_LEVEL_DOCS + (
 TOP_LEVEL_REFERENCE_DOCS = ACTIVE_DOCS + ("ROADMAP.md",)
 
 LEGACY_SOURCE_REFERENCES = (
-    ".codex-dev/skills",
-    ".codex-dev/bundles",
+    "." + "codex" + "-dev/skills",
+    "." + "codex" + "-dev/bundles",
 )
 
 

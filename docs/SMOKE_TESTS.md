@@ -4,8 +4,8 @@
 
 ## Как использовать
 
-1. Собрать plugin bundle через `python3 .codex-dev/scripts/build-plugins.py`.
-2. Установить нужный plugin через Codex plugin management или, для локального source-теста, через `.codex-dev/scripts/sync-to-codex.sh`.
+1. Собрать plugin bundle через `python3 scripts/build-plugins.py`.
+2. Установить нужный plugin через Codex plugin management или, для локального source-теста, через `scripts/sync-to-codex.sh`.
 3. Перезапустить Codex, чтобы он перечитал plugins или skills.
 4. Запустить запросы ниже в тестовом художественном проекте или в минимальной папке с похожей структурой.
 5. Для каждого кейса проверить:
