@@ -46,8 +46,8 @@ The language validator keeps skill instructions Russian-first while allowing Eng
 Install-ready releases are published by `.github/workflows/release.yml`.
 
 ```bash
-git tag v1.0.1
-git push origin v1.0.1
+git tag vX.Y.Z
+git push origin vX.Y.Z
 ```
 
 The release workflow builds plugin bundles from `src/modules/*.yaml`, validates them, packages zip assets, and uploads them to GitHub Release.

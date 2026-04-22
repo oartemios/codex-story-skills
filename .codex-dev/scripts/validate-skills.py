@@ -37,7 +37,17 @@ TOP_LEVEL_DOCS = (
     "SECURITY.md",
 )
 
-TOP_LEVEL_REFERENCE_DOCS = TOP_LEVEL_DOCS + ("ROADMAP.md",)
+ACTIVE_DOCS = TOP_LEVEL_DOCS + (
+    "docs/ARCHITECTURE.md",
+    "docs/PACKAGING.md",
+)
+
+TOP_LEVEL_REFERENCE_DOCS = ACTIVE_DOCS + ("ROADMAP.md",)
+
+LEGACY_SOURCE_REFERENCES = (
+    ".codex-dev/skills",
+    ".codex-dev/bundles",
+)
 
 
 def iter_skill_dirs() -> list[Path]:
@@ -280,14 +290,24 @@ def validate_markdown_references(md_file: Path, errors: list[str]) -> None:
             rel = md_file.relative_to(REPO_ROOT)
             errors.append(f"{rel}: broken markdown reference '{ref}'")
 
-    if md_file.parent == REPO_ROOT:
-        for target in MARKDOWN_LINK_RE.findall(text):
-            resolved = resolve_markdown_link(md_file, target)
-            if resolved is None:
-                continue
-            if not resolved.exists():
-                rel = md_file.relative_to(REPO_ROOT)
-                errors.append(f"{rel}: broken markdown link '{target}'")
+    for target in MARKDOWN_LINK_RE.findall(text):
+        resolved = resolve_markdown_link(md_file, target)
+        if resolved is None:
+            continue
+        if not resolved.exists():
+            rel = md_file.relative_to(REPO_ROOT)
+            errors.append(f"{rel}: broken markdown link '{target}'")
+
+
+def validate_active_doc_legacy_references(md_file: Path, errors: list[str]) -> None:
+    if "docs/archive" in md_file.as_posix():
+        return
+
+    text = md_file.read_text(encoding="utf-8")
+    rel = md_file.relative_to(REPO_ROOT)
+    for legacy_ref in LEGACY_SOURCE_REFERENCES:
+        if legacy_ref in text:
+            errors.append(f"{rel}: stale legacy source reference '{legacy_ref}'")
 
 
 def validate_bundle_manifests(errors: list[str]) -> None:
@@ -485,14 +505,18 @@ def main() -> int:
     markdown_files = sorted(CONTENT_ROOT.rglob("*.md")) if CONTENT_ROOT.exists() else []
     if PLUGINS_ROOT.exists():
         markdown_files.extend(sorted(PLUGINS_ROOT.rglob("*.md")))
-    top_level_docs = [REPO_ROOT / doc for doc in TOP_LEVEL_DOCS]
-    for doc in top_level_docs:
-        if not doc.exists():
-            errors.append(f"{doc.relative_to(REPO_ROOT)}: missing top-level doc")
 
-    markdown_files.extend(doc for doc in top_level_docs if doc.exists())
+    active_docs = [REPO_ROOT / doc for doc in ACTIVE_DOCS]
+    for doc in active_docs:
+        if not doc.exists():
+            errors.append(f"{doc.relative_to(REPO_ROOT)}: missing active doc")
+
+    markdown_files.extend(doc for doc in active_docs if doc.exists())
     for md_file in markdown_files:
         validate_markdown_references(md_file, errors)
+    for doc in active_docs:
+        if doc.exists():
+            validate_active_doc_legacy_references(doc, errors)
     validate_bundle_manifests(errors)
     validate_built_plugins(errors)
 

@@ -5,7 +5,7 @@
 Проверь имя plugin и версию:
 
 ```bash
-bash /tmp/codex-story-skills-install.sh --plugin fiction-core --version v1.0.0
+bash /tmp/codex-story-skills-install.sh --plugin fiction-core --version latest
 ```
 
 Допустимые plugin names:
