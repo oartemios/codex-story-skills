@@ -61,12 +61,12 @@ Generated plugins нужно пересобрать из текущего source
 - skills из `src/content/skills/`
 
 ```bash
-python3 .codex-dev/scripts/build-plugins.py
-python3 .codex-dev/scripts/validate-skills.py
+python3 scripts/build-plugins.py
+python3 scripts/validate-skills.py
 ```
 
 Raw sync — только внутренний helper для локальной проверки source skills:
 
 ```bash
-.codex-dev/scripts/sync-to-codex.sh --dry-run
+scripts/sync-to-codex.sh --dry-run
 ```

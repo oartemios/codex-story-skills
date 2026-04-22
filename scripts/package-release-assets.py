@@ -10,7 +10,7 @@ from pathlib import Path
 from bundle_sources import bundle_names
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 PLUGINS_ROOT = REPO_ROOT / "plugins"
 DIST_ROOT = REPO_ROOT / "dist"
 

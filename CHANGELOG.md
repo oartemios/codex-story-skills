@@ -15,7 +15,7 @@ All notable changes to this project are documented here.
 
 ### Added
 
-- Plugin-first package layout with `.codex-dev/` as source/build layer and `plugins/` as generated installable artifacts.
+- Plugin-first package layout with `scripts/` as source/build tooling and `plugins/` as generated installable artifacts.
 - `fiction-core`, `engineering-addon`, and `obsidian-addon` plugin bundles.
 - `rfc-adr-assistant` skill for optional engineering RFC/ADR drafting and review.
 - `obsidian-compat` skill for optional Obsidian vault compatibility.
@@ -28,7 +28,7 @@ All notable changes to this project are documented here.
 ### Changed
 
 - Renamed the RFC/ADR skill to `rfc-adr-assistant`.
-- Moved raw skill sync to `.codex-dev/scripts/sync-to-codex.sh` as an internal development helper.
+- Moved raw skill sync to `scripts/sync-to-codex.sh` as an internal development helper.
 - Replaced public install flow with release-asset download and local marketplace registration.
 
 ## v0.1.0 - 2026-04-14

@@ -19,7 +19,7 @@ trap cleanup EXIT
 usage() {
   cat <<'EOF'
 Usage:
-  .codex-dev/scripts/sync-to-codex.sh [--dry-run] [--dest PATH] [--backup-root PATH]
+  scripts/sync-to-codex.sh [--dry-run] [--dest PATH] [--backup-root PATH]
 
 Options:
   --dry-run           Show what would be synced without changing ~/.codex/skills

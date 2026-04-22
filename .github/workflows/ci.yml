@@ -20,36 +20,36 @@ jobs:
           python-version: "3.11"
 
       - name: Build plugin bundles
-        run: python3 .codex-dev/scripts/build-plugins.py
+        run: python3 scripts/build-plugins.py
 
       - name: Validate skill language
-        run: python3 .codex-dev/scripts/validate-language.py --scope all
+        run: python3 scripts/validate-language.py --scope all
 
       - name: Validate source skills and plugins
-        run: python3 .codex-dev/scripts/validate-skills.py
+        run: python3 scripts/validate-skills.py
 
       - name: Check shell scripts syntax
-        run: bash -n scripts/install-package.sh .codex-dev/scripts/sync-to-codex.sh
+        run: bash -n scripts/install-package.sh scripts/sync-to-codex.sh
 
       - name: Check installer help
         run: scripts/install-package.sh --help
 
       - name: Package release assets
-        run: python3 .codex-dev/scripts/package-release-assets.py
+        run: python3 scripts/package-release-assets.py
 
       - name: Dry-run raw sync to fake Codex Home
         env:
           HOME: ${{ runner.temp }}/fake-home
         run: |
           mkdir -p "$HOME/.codex/skills/.system"
-          .codex-dev/scripts/sync-to-codex.sh --dry-run
+          scripts/sync-to-codex.sh --dry-run
 
       - name: Real raw sync to fake Codex Home
         env:
           HOME: ${{ runner.temp }}/fake-home
         run: |
           mkdir -p "$HOME/.codex/skills/.system"
-          .codex-dev/scripts/sync-to-codex.sh
+          scripts/sync-to-codex.sh
 
       - name: Verify generated plugin package
         run: |

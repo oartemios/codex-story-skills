@@ -92,8 +92,8 @@ bash /tmp/codex-story-skills-install.sh \
 Raw skill sync — внутренний development helper, а не публичный install path:
 
 ```bash
-python3 .codex-dev/scripts/build-plugins.py
-.codex-dev/scripts/sync-to-codex.sh --dry-run
+python3 scripts/build-plugins.py
+scripts/sync-to-codex.sh --dry-run
 ```
 
 Используй его только для локальной проверки source skills.

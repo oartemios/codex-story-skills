@@ -8,10 +8,8 @@ from bundle_manifest import load_bundle_manifest
 
 
 SCRIPTS_ROOT = Path(__file__).resolve().parent
-DEV_ROOT = SCRIPTS_ROOT.parent
-REPO_ROOT = DEV_ROOT.parent
+REPO_ROOT = SCRIPTS_ROOT.parent
 SRC_ROOT = REPO_ROOT / "src"
-SKILLS_ROOT = DEV_ROOT / "skills"
 MODULES_ROOT = SRC_ROOT / "modules"
 CONTENT_ROOT = SRC_ROOT / "content"
 CONTENT_SKILLS_ROOT = CONTENT_ROOT / "skills"

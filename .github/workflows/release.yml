@@ -31,16 +31,16 @@ jobs:
           python-version: "3.11"
 
       - name: Build plugin bundles
-        run: python3 .codex-dev/scripts/build-plugins.py
+        run: python3 scripts/build-plugins.py
 
       - name: Validate skill language
-        run: python3 .codex-dev/scripts/validate-language.py --scope all
+        run: python3 scripts/validate-language.py --scope all
 
       - name: Validate source skills and plugins
-        run: python3 .codex-dev/scripts/validate-skills.py
+        run: python3 scripts/validate-skills.py
 
       - name: Package release assets
-        run: python3 .codex-dev/scripts/package-release-assets.py
+        run: python3 scripts/package-release-assets.py
 
       - name: Verify release assets
         run: |
